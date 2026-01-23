@@ -13,9 +13,12 @@ async def root():
 @app.get("/files/{file_path:path}")
 async def read_file(file_path: str):
     img = Image.open(file_path)
+    print("hello")
     
     buffer = BytesIO()
     img.save(buffer, format='PNG')
     buffer.seek(0)
     
     return StreamingResponse(buffer, media_type="image/png")
+
+print("YOU SUCK")
