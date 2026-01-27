@@ -91,4 +91,4 @@ cursor.fetchall()
 cursor.execute('SELECT * FROM auto_stats')
 cursor.fetchall()
 
-cursor.close()
+connection.close()
