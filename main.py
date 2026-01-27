@@ -2,20 +2,30 @@ from io import BytesIO
 from fastapi import FastAPI
 from PIL import Image
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from database import Base, engine, SessionLocal
+from models import User
+from schemas import UserCreate
+from fastapi import FastAPI, Depends
+
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"health ok... OR IS IT", "fine..."}
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-
-@app.get("/files/{file_path:path}")
-async def read_file(file_path: str):
-    img = Image.open(file_path)
-    
-    buffer = BytesIO()
-    img.save(buffer, format='PNG')
-    buffer.seek(0)
-    
-    return StreamingResponse(buffer, media_type="image/png")
+@app.post("/users/")
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = User(name=user.name, email=user.email)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
