@@ -23,14 +23,24 @@ CREATE TABLE IF NOT EXISTS teleopt_stats (
 cursor.execute(teleopt)
 
 #the teleopt data
-teams_teleopt = [
+teams_teleopt_3756 = [
     (3756, 0, 0, 0, 0)
 ]
 
 #puts teleopt data into table
 cursor.executemany(
     'INSERT INTO teleopt_stats (team, score, climb_speed, climb_level, times_stuck) VALUES (?, ?, ?, ?, ?)',
-    teams_teleopt
+    teams_teleopt_3756
+)
+
+teams_teleopt_2056 = [
+    (2056, 0, 0, 0, 0)
+]
+
+#puts teleopt data into table
+cursor.executemany(
+    'INSERT INTO teleopt_stats (team, score, climb_speed, climb_level, times_stuck) VALUES (?, ?, ?, ?, ?)',
+    teams_teleopt_2056
 )
 
 #What Specs Every Team's Robot Has
@@ -52,6 +62,10 @@ robot_specs = [
     (3756, 'h', 'h', 'h', 'h', 0.0, 'h')
 ]
 
+robot_specs = [
+    (2056, 'h', 'h', 'h', 'h', 0.0, 'h')
+]
+
 cursor.executemany(
     'INSERT INTO specs (team, drive_train, shooter, intake, climb, fuel_storage_l, bumps_trench) VALUES (?, ?, ?, ?, ?, ?, ?)',
     robot_specs
@@ -69,13 +83,22 @@ CREATE TABLE IF NOT EXISTS auto_stats (
 
 cursor.execute(auto)
 
-teams_auto = [
-    (3765, 'h', 'h', 0)
+teams_auto_3756 = [
+    (3756, 'h', 'h', 0)
+]
+
+teams_auto_2056 = [
+    (2056, 'h', 'h', 0)
 ]
 
 cursor.executemany(
     'INSERT INTO auto_stats (team, steps, success, auto_points) VALUES (?, ?, ?, ?)',
-    teams_auto
+    teams_auto_3756
+)
+
+cursor.executemany(
+    'INSERT INTO auto_stats (team, steps, success, auto_points) VALUES (?, ?, ?, ?)',
+    teams_auto_2056
 )
 
 

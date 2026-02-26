@@ -6,21 +6,19 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database import Base, engine, SessionLocal
-from models import User
 from schemas import UserCreate
 from fastapi import FastAPI, Depends
 
 
 Base.metadata.create_all(bind=engine)
 
+class Userclass(BaseModel):
+    name: str
+    email: str
+
 app = FastAPI()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+db_user = User(name=user.name, email=user.email)
 
 @app.post("/users/")
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -29,3 +27,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
