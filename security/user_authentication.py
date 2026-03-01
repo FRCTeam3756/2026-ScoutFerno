@@ -21,7 +21,7 @@ fake_users_db = {
         "hashed_password": "$argon2id$v=19$m=19456,t=2,p=1$YWM5ZjE1N2ZlYWUwY2Q3MmRhY2IxMzJkZjJlYTk3YWM$KrAy4ZO2u6TjsYSesT62Yx1QGrbda4aoSKSX3Z8Rko0",
         "disabled": False,
     },
-    "Ibriham": {
+    "Ibrahim": {
         "username": "Ibrahim",
         "hashed_password": "$argon2id$v=19$m=19456,t=2,p=1$YWM5ZjE1N2ZlYWUwY2Q3MmRhY2IxMzJkZjJlYTk3YWM$3gQ4Wzp1QcrVqDju1SHzQ7Lsskcacn/43a4uRZN0qgU",
         "disabled": False,
