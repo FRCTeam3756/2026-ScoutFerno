@@ -32,7 +32,7 @@ class Match_Data_Update(SQLModel):
 
 
 
-sqlite_file_name = "team_match_data.db"
+sqlite_file_name = "team_data.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}

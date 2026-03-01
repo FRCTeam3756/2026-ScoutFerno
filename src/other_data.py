@@ -24,7 +24,7 @@ class DataUpdate(SQLModel):
     balls: int | None = None
 
 
-sqlite_file_name = "teamdata.db"
+sqlite_file_name = "team_data.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}
