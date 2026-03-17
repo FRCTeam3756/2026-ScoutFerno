@@ -1,52 +1,10 @@
 from fastapi import FastAPI, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-from sqlalchemy import UniqueConstraint
+from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
-from contextlib import asynccontextmanager
 
-
-class Match_Data_Base(SQLModel):
-    team_number: int = Field(index=True)
-    match_number: int = Field(index=True)
-    ball_storage: int = Field(index=True)
-    drivetrain_type: str = Field(index=True)
-    balls: int = Field(index=True)
-
-    
-
-class Match_Data(Match_Data_Base, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    __table_args__ = (
-        UniqueConstraint("team_number", "match_number", name="data_creation_constraint"),
-    )
-    
-
-class Match_Data_Create(Match_Data_Base):
-    pass
-
-
-class Match_Data_Update(SQLModel):
-    ball_storage: int | None = None
-    drivetrain_type: str | None = None
-    balls: int | None = None
-
-
-
-sqlite_file_name = "team_data.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    create_db_and_tables()
-    yield
+from models.in_match_data_class import Match_Data, Match_Data_Create, Match_Data_Update
+from models.sql_models import engine
+from models.fastapi_models import lifespan
 
 
 app = FastAPI(lifespan=lifespan)
