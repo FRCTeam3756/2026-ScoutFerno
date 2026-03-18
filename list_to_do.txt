@@ -1,3 +1,9 @@
+TO DO:
+    - Add google oauth middle ware into fastapi and models to authenticate users
+    - Redo data models to incoperate TBA API
+    - Add app startup so it actually runs
+    - Figure out video storage and push/pull (Cloudflare R2?)
+
 Ideas:
     - Scouts put % of balls their robot scored (increments of 5) take that number, pull total score from TBA and put scout % x TBA score = their rough balls scored
     - Same as last idea but seperate for auto and teleop
