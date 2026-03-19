@@ -3,11 +3,11 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from ..models.auto_data_models import Auto_Data, Auto_Data_Create, Auto_Data_Update
-from ..models.sql_models import engine
+from ..models.sql_models import team_engine
 
 
 async def create_auto_data(match_data: Auto_Data_Create):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         db_data = Auto_Data.model_validate(match_data)
         session.add(db_data)
 
@@ -24,14 +24,14 @@ async def create_auto_data(match_data: Auto_Data_Create):
 
 
 async def read_auto_data():
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         match_data = session.exec(select(Auto_Data)).all()
         return match_data
 
 
 
 async def read_auto_data_by_team(team_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(Auto_Data.team_number == team_number)
         results = session.exec(statement).all()
         if not results:
@@ -40,7 +40,7 @@ async def read_auto_data_by_team(team_number: int):
     
 
 async def read_auto_data_by_match(match_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(Auto_Data.match_number == match_number)
         results = session.exec(statement).all()
         if not results:
@@ -49,7 +49,7 @@ async def read_auto_data_by_match(match_number: int):
     
 
 async def read_auto_data_by_team_match(team_number: int, match_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
@@ -61,7 +61,7 @@ async def read_auto_data_by_team_match(team_number: int, match_number: int):
 
 
 async def update_auto_data(team_number: int, match_number: int, match_data: Auto_Data_Update):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
@@ -83,7 +83,7 @@ async def update_auto_data(team_number: int, match_number: int, match_data: Auto
 
 
 async def delete_match_auto_data(team_number: int, match_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
@@ -99,7 +99,7 @@ async def delete_match_auto_data(team_number: int, match_number: int):
     
 
 async def delete_team_auto_data(team_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.team_number == team_number,
         )

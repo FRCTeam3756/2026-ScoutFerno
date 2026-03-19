@@ -30,3 +30,7 @@ class Interview_Match_Data_Update(SQLModel):
     intake_amount: int | None = None 
     field_elements_useabillity: str | None = None
     climb_type: str | None = None
+
+
+class Interview_Data_Read(Interview_Match_Data_Base):
+    pass

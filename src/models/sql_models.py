@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine
 from sqlmodel import SQLModel
 
-sqlite_file_name = "team_data.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+team_sqlite_file_name = "src/database/team_data.db"
+team_sqlite_url = f"sqlite:///{team_sqlite_file_name}"
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
+team_connect_args = {"check_same_thread": False}
+team_engine = create_engine(team_sqlite_url, echo=True, connect_args=team_connect_args)
 
 
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+def create_team_db_and_tables():
+    SQLModel.metadata.create_all(team_engine)

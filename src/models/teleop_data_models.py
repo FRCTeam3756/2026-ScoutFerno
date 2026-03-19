@@ -31,3 +31,7 @@ class Teleop_Data_Update(SQLModel):
     teleop_climb: int | None = None
     climb_speed: str | None = None
     driver_skill: str | None = None
+
+
+class Teleop_Data_Read(Teleop_Data_Base):
+    pass

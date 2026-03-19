@@ -3,11 +3,11 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from ..models.interview_data_models import Interview_Match_Data, Interview_Match_Data_Create, Interview_Match_Data_Update
-from ..models.sql_models import engine
+from ..models.sql_models import team_engine
 
 
 async def create_interview_match_data(interview_match_data: Interview_Match_Data_Create):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         db_data = Interview_Match_Data.model_validate(interview_match_data)
         session.add(db_data)
 
@@ -24,13 +24,13 @@ async def create_interview_match_data(interview_match_data: Interview_Match_Data
 
 
 async def read_interview_match_data():
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         interview_match_data = session.exec(select(Interview_Match_Data)).all()
         return interview_match_data
 
 
 async def read_interview_match_data_by_team(team_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Interview_Match_Data).where(Interview_Match_Data.team_number == team_number)
         results = session.exec(statement).all()
         if not results:
@@ -39,7 +39,7 @@ async def read_interview_match_data_by_team(team_number: int):
     
 
 async def update_interview_match_data(team_number: int, interview_match_data: Interview_Match_Data_Update):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Interview_Match_Data).where(
             Interview_Match_Data.team_number == team_number
         )
@@ -60,7 +60,7 @@ async def update_interview_match_data(team_number: int, interview_match_data: In
     
 
 async def delete_interview_match_data(team_number: int):
-    with Session(engine) as session:
+    with Session(team_engine) as session:
         statement = select(Interview_Match_Data).where(
             Interview_Match_Data.team_number == team_number
         )

@@ -11,24 +11,24 @@ router = APIRouter()
 
 @router.post("/data/interview_match_data/", response_model=Interview_Match_Data)
 async def create_interview_match_data_route(interview_match_data: Interview_Match_Data_Create, ):#creds: Credentials = Depends(require_auth)):
-    return create_interview_match_data(interview_match_data)
+    return await create_interview_match_data(interview_match_data)
 
 
 @router.get("/data/interview_match_data/", response_model=list[Interview_Match_Data])
 async def read_interview_match_data_route():#creds: Credentials = Depends(require_auth)):
-    return read_interview_match_data()
+    return await read_interview_match_data()
 
 
 @router.get("/data/interview_match_data/team/{team_number}", response_model=list[Interview_Match_Data])
 async def read_interview_match_data_by_team_route(team_number: int, ):#creds: Credentials = Depends(require_auth)):
-    return read_interview_match_data_by_team(team_number)
+    return await read_interview_match_data_by_team(team_number)
 
 
 @router.patch("/data/interview_match_data/team/{team_number}", response_model=Interview_Match_Data)
 async def update_interview_match_data_route(team_number: int, interview_match_data: Interview_Match_Data_Update, ):#creds: Credentials = Depends(require_auth)):
-    return update_interview_match_data(team_number, interview_match_data)
+    return await update_interview_match_data(team_number, interview_match_data)
 
 
 @router.delete("/data/interview_match_data/team/{team_number}")
 async def delete_interview_match_data_route(team_number: int, ):#creds: Credentials = Depends(require_auth)):
-    return delete_interview_match_data(team_number)
+    return await delete_interview_match_data(team_number)

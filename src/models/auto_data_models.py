@@ -28,3 +28,7 @@ class Auto_Data_Update(SQLModel):
     auto_type: str | None = None
     auto_fuel_scored: float | None = None
     auto_climb: int | None = None
+
+
+class Auto_Data_Read(Auto_Data_Base):
+    pass
