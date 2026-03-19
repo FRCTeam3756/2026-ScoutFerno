@@ -2,13 +2,13 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from ..models.in_match_data_models import In_Match_Data, In_Match_Data_Create, In_Match_Data_Update
+from ..models.auto_data_models import Auto_Data, Auto_Data_Create, Auto_Data_Update
 from ..models.sql_models import engine
 
 
-def create_in_match_data(match_data: In_Match_Data_Create):
+async def create_auto_data(match_data: Auto_Data_Create):
     with Session(engine) as session:
-        db_data = In_Match_Data.model_validate(match_data)
+        db_data = Auto_Data.model_validate(match_data)
         session.add(db_data)
 
         try:
@@ -23,36 +23,36 @@ def create_in_match_data(match_data: In_Match_Data_Create):
             )
 
 
-def read_in_match_data():
+async def read_auto_data():
     with Session(engine) as session:
-        match_data = session.exec(select(In_Match_Data)).all()
+        match_data = session.exec(select(Auto_Data)).all()
         return match_data
 
 
 
-def read_in_match_data_by_team(team_number: int):
+async def read_auto_data_by_team(team_number: int):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(In_Match_Data.team_number == team_number)
+        statement = select(Auto_Data).where(Auto_Data.team_number == team_number)
         results = session.exec(statement).all()
         if not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
     
 
-def read_in_match_data_by_match(match_number: int):
+async def read_auto_data_by_match(match_number: int):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(In_Match_Data.match_number == match_number)
+        statement = select(Auto_Data).where(Auto_Data.match_number == match_number)
         results = session.exec(statement).all()
         if not results:
             raise HTTPException(status_code=404, detail="Match data not found")
         return results
     
 
-def read_in_match_data_by_team_match(team_number: int, match_number: int):
+async def read_auto_data_by_team_match(team_number: int, match_number: int):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+        statement = select(Auto_Data).where(
+            Auto_Data.team_number == team_number,
+            Auto_Data.match_number == match_number
             )
         results = session.exec(statement).all()
         if not results:
@@ -60,11 +60,11 @@ def read_in_match_data_by_team_match(team_number: int, match_number: int):
         return results
 
 
-def update_in_match_data(team_number: int, match_number: int, match_data: In_Match_Data_Update):
+async def update_auto_data(team_number: int, match_number: int, match_data: Auto_Data_Update):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+        statement = select(Auto_Data).where(
+            Auto_Data.team_number == team_number,
+            Auto_Data.match_number == match_number
         )
 
         db_match = session.exec(statement).first()
@@ -82,11 +82,11 @@ def update_in_match_data(team_number: int, match_number: int, match_data: In_Mat
         return db_match
 
 
-def delete_match_in_match_data(team_number: int, match_number: int):
+async def delete_match_auto_data(team_number: int, match_number: int):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+        statement = select(Auto_Data).where(
+            Auto_Data.team_number == team_number,
+            Auto_Data.match_number == match_number
         )
 
         match_data = session.exec(statement).first()
@@ -98,10 +98,10 @@ def delete_match_in_match_data(team_number: int, match_number: int):
         return {"ok": True}
     
 
-def delete_team_in_match_data(team_number: int):
+async def delete_team_auto_data(team_number: int):
     with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
+        statement = select(Auto_Data).where(
+            Auto_Data.team_number == team_number,
         )
 
         team_match_data = session.exec(statement).all()
