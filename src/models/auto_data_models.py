@@ -17,7 +17,6 @@ class Auto_Data(Auto_Data_Base, table=True):
     __table_args__ = (
         UniqueConstraint("team_number", "match_number", name="data_creation_constraint"),
     )
-    
 
 class Auto_Data_Create(Auto_Data_Base):
     pass
@@ -32,3 +31,4 @@ class Auto_Data_Update(SQLModel):
 
 class Auto_Data_Read(Auto_Data_Base):
     pass
+
