@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 import json
 
 from google_auth import TOKEN_PATH, SCOPES
@@ -16,6 +17,13 @@ def require_auth() -> Credentials:
     )
     
     if not creds.valid:
-        raise HTTPException(status_code=401, detail="Token expired, please login again")
-    
-    return creds
+        if creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+                TOKEN_PATH.write_text(creds.to_json())  # persist refreshed token
+            except Exception:
+                raise HTTPException(status_code=401, detail="Token refresh failed, please login again")
+        else:
+            raise HTTPException(status_code=401, detail="Token expired, please login again")
+
+    return creds   
