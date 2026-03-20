@@ -3,7 +3,7 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 import json
 
-from google_auth import TOKEN_PATH, SCOPES
+from .google_auth import TOKEN_PATH, SCOPES
 
 
 
@@ -11,10 +11,13 @@ def require_auth() -> Credentials:
     if not TOKEN_PATH.exists():
         raise HTTPException(status_code=401, detail="Not logged in")
     
-    creds = Credentials.from_authorized_user_info(
-        info=json.loads(TOKEN_PATH.read_text()),
-        scopes=SCOPES,
-    )
+    try:
+        creds = Credentials.from_authorized_user_info(  # type: ignore
+            info=json.loads(TOKEN_PATH.read_text()),
+            scopes=SCOPES,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail="Invalid token, please login again")
     
     if not creds.valid:
         if creds.expired and creds.refresh_token:
@@ -26,4 +29,4 @@ def require_auth() -> Credentials:
         else:
             raise HTTPException(status_code=401, detail="Token expired, please login again")
 
-    return creds   
+    return creds

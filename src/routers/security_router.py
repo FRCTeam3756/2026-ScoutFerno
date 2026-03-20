@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
-import googleapiclient.discovery as discovery
+import googleapiclient.discovery as discovery # type: ignore
 import json
 from google.oauth2.credentials import Credentials
+from typing import Any, cast
 
 from ..security.google_auth import authenticate_google, TOKEN_PATH, SCOPES
 
@@ -9,27 +10,31 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.get("/login")
-def login():
+def login() -> dict[str, str | None]:
     try:
         creds = authenticate_google()
-        service = discovery.build("oauth2", "v2", credentials=creds)
-        user_info = service.userinfo().get().execute()
+        if not creds:
+            raise HTTPException(status_code=401, detail="Failed to authenticate")
+        service = cast(Any, discovery.build("oauth2", "v2", credentials=creds))  # type: ignore
+        user_info = cast(dict[str, Any], service.userinfo().get().execute())
         return {
             "name": user_info.get("name"),
             "email": user_info.get("email"),
             "picture": user_info.get("picture")
         }
+    except FileNotFoundError:
+        raise HTTPException(status_code=401, detail="Token file not found, please try again")
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 
 
 @router.get("/status")
-def auth_status():
+def auth_status() -> dict[str, bool]:
     if not TOKEN_PATH.exists():
         return {"authenticated": False}
     try:
-        creds = Credentials.from_authorized_user_info(
-            info=json.loads(TOKEN_PATH.read_text()),
+        creds = Credentials.from_authorized_user_info(  # type: ignore
+            info=cast(dict[str, Any], json.loads(TOKEN_PATH.read_text())),
             scopes=SCOPES,
         )
         

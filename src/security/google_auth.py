@@ -15,15 +15,25 @@ SCOPES: Optional[list[str]] = None #["https://www.googleapis.com/auth/spreadshee
 
 
 def authenticate_google() -> Credentials:
-    creds = Credentials.from_authorized_user_info(
-        info=json.loads(TOKEN_PATH.read_text()),
-        scopes=SCOPES,
-    )
+    creds = None
+    
+    if TOKEN_PATH.exists():
+        try:
+            creds = Credentials.from_authorized_user_info(
+                info=json.loads(TOKEN_PATH.read_text()),
+                scopes=SCOPES,
+            )
+        except (FileNotFoundError, json.JSONDecodeError, ValueError):
+            creds = None
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+            except Exception:
+                creds = None
+        
+        if not creds:
             flow = InstalledAppFlow.from_client_secrets_file(
                 str(CREDENTIALS_PATH),
                 scopes=SCOPES,
