@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from google.oauth2.credentials import Credentials
 
-from ..security.goole_auth_guard import require_auth
+from ..security.google_auth_guard import require_auth
 from ..models.auto_data_models import Auto_Data, Auto_Data_Create, Auto_Data_Update
 from ..crud.auto_data_crud import create_auto_data, delete_team_auto_data, delete_match_auto_data, update_auto_data, read_auto_data, read_auto_data_by_team, read_auto_data_by_match, read_auto_data_by_team_match
 

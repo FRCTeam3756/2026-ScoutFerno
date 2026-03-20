@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from google.oauth2.credentials import Credentials
 
-from ..security.goole_auth_guard import require_auth
+from ..security.google_auth_guard import require_auth
 from ..crud.interview_data_crud import create_interview_match_data, read_interview_match_data, update_interview_match_data, delete_interview_match_data, read_interview_match_data_by_team
 from ..models.interview_data_models import Interview_Match_Data, Interview_Match_Data_Create, Interview_Match_Data_Update
 

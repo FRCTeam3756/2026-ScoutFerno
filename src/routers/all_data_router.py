@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from google.oauth2.credentials import Credentials
 
-from ..security.goole_auth_guard import require_auth
+from ..security.google_auth_guard import require_auth
 from ..crud.all_data_crud import read_all_data, read_all_data_by_match, read_all_data_by_team, read_all_data_by_team_match
 from ..models.all_data_models import All_Data
 

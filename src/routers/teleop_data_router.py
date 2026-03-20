@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from google.oauth2.credentials import Credentials
 
-from ..security.goole_auth_guard import require_auth
+from ..security.google_auth_guard import require_auth
 from ..models.teleop_data_models import Teleop_Data, Teleop_Data_Create, Teleop_Data_Update
 from ..crud.teleop_data_crud import create_teleop_data, delete_team_teleop_data, delete_match_teleop_data, update_teleop_data, read_teleop_data, read_teleop_data_by_team, read_teleop_data_by_match, read_teleop_data_by_team_match
 
