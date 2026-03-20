@@ -2,13 +2,13 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from ..models.in_match_data_models import In_Match_Data, In_Match_Data_Create, In_Match_Data_Update
-from ..models.sql_models import engine
+from ..models.teleop_data_models import Teleop_Data, Teleop_Data_Create, Teleop_Data_Update
+from ..models.sql_models import team_engine
 
 
-def create_in_match_data(match_data: In_Match_Data_Create):
-    with Session(engine) as session:
-        db_data = In_Match_Data.model_validate(match_data)
+async def create_teleop_data(match_data: Teleop_Data_Create):
+    with Session(team_engine) as session:
+        db_data = Teleop_Data.model_validate(match_data)
         session.add(db_data)
 
         try:
@@ -23,36 +23,36 @@ def create_in_match_data(match_data: In_Match_Data_Create):
             )
 
 
-def read_in_match_data():
-    with Session(engine) as session:
-        match_data = session.exec(select(In_Match_Data)).all()
+async def read_teleop_data():
+    with Session(team_engine) as session:
+        match_data = session.exec(select(Teleop_Data)).all()
         return match_data
 
 
 
-def read_in_match_data_by_team(team_number: int):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(In_Match_Data.team_number == team_number)
+async def read_teleop_data_by_team(team_number: int):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(Teleop_Data.team_number == team_number)
         results = session.exec(statement).all()
         if not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
     
 
-def read_in_match_data_by_match(match_number: int):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(In_Match_Data.match_number == match_number)
+async def read_teleop_data_by_match(match_number: int):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(Teleop_Data.match_number == match_number)
         results = session.exec(statement).all()
         if not results:
             raise HTTPException(status_code=404, detail="Match data not found")
         return results
     
 
-def read_in_match_data_by_team_match(team_number: int, match_number: int):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+async def read_teleop_data_by_team_match(team_number: int, match_number: int):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(
+            Teleop_Data.team_number == team_number,
+            Teleop_Data.match_number == match_number
             )
         results = session.exec(statement).all()
         if not results:
@@ -60,11 +60,11 @@ def read_in_match_data_by_team_match(team_number: int, match_number: int):
         return results
 
 
-def update_in_match_data(team_number: int, match_number: int, match_data: In_Match_Data_Update):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+async def update_teleop_data(team_number: int, match_number: int, match_data: Teleop_Data_Update):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(
+            Teleop_Data.team_number == team_number,
+            Teleop_Data.match_number == match_number
         )
 
         db_match = session.exec(statement).first()
@@ -82,11 +82,11 @@ def update_in_match_data(team_number: int, match_number: int, match_data: In_Mat
         return db_match
 
 
-def delete_match_in_match_data(team_number: int, match_number: int):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
-            In_Match_Data.match_number == match_number
+async def delete_match_teleop_data(team_number: int, match_number: int):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(
+            Teleop_Data.team_number == team_number,
+            Teleop_Data.match_number == match_number
         )
 
         match_data = session.exec(statement).first()
@@ -98,10 +98,10 @@ def delete_match_in_match_data(team_number: int, match_number: int):
         return {"ok": True}
     
 
-def delete_team_in_match_data(team_number: int):
-    with Session(engine) as session:
-        statement = select(In_Match_Data).where(
-            In_Match_Data.team_number == team_number,
+async def delete_team_teleop_data(team_number: int):
+    with Session(team_engine) as session:
+        statement = select(Teleop_Data).where(
+            Teleop_Data.team_number == team_number,
         )
 
         team_match_data = session.exec(statement).all()
