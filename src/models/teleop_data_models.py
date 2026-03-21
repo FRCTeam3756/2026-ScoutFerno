@@ -49,5 +49,3 @@ class Teleop_Data_Update(SQLModel):
     driver_skill: str | None = None
 
 
-class Teleop_Data_Read(Teleop_Data_Base):
-    pass

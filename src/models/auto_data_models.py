@@ -45,6 +45,4 @@ class Auto_Data_Update(SQLModel):
     auto_climb: int | None = None
 
 
-class Auto_Data_Read(Auto_Data_Base):
-    pass
 
