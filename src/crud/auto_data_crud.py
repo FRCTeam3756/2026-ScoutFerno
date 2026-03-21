@@ -23,33 +23,47 @@ async def create_auto_data(match_data: Auto_Data_Create):
             )
 
 
-async def read_auto_data():
+async def read_auto_data(year: int, flagError: bool = True):
     with Session(team_engine) as session:
-        match_data = session.exec(select(Auto_Data)).all()
-        return match_data
+        statement = select(Auto_Data).where(
+            Auto_Data.year == year
+            )
+        results = session.exec(statement).all()
+        if flagError and not results:
+            raise HTTPException(status_code=404, detail="Data not found")
+        return results
 
 
-async def read_auto_data_by_team(team_number: int, flagError: bool = True):
+async def read_auto_data_by_team(year: int, team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(Auto_Data.team_number == team_number)
+        statement = select(Auto_Data).where(
+            Auto_Data.year == year,
+            Auto_Data.team_number == team_number
+            )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
      
 
-async def read_auto_data_by_match(match_number: int, flagError: bool = True):
+async def read_auto_data_by_match(year: int, competition: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(Auto_Data.match_number == match_number)
+        statement = select(Auto_Data).where(
+            Auto_Data.year == year,
+            Auto_Data.competition == competition,
+            Auto_Data.match_number == match_number
+            )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Match data not found")
         return results
     
 
-async def read_auto_data_by_team_match(team_number: int, match_number: int, flagError: bool = True):
+async def read_auto_data_by_team_match(year: int, competition: str, team_number: int, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
+            Auto_Data.year == year,
+            Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
             )
@@ -59,9 +73,11 @@ async def read_auto_data_by_team_match(team_number: int, match_number: int, flag
         return results
 
 
-async def update_auto_data(team_number: int, match_number: int, match_data: Auto_Data_Update):
+async def update_auto_data(year: int, competition: str, team_number: int, match_number: int, match_data: Auto_Data_Update):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
+            Auto_Data.year == year,
+            Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
         )
@@ -81,9 +97,11 @@ async def update_auto_data(team_number: int, match_number: int, match_data: Auto
         return db_match
 
 
-async def delete_match_auto_data(team_number: int, match_number: int):
+async def delete_match_auto_data(year: int, competition: str, team_number: int, match_number: int):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
+            Auto_Data.year == year,
+            Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
             Auto_Data.match_number == match_number
         )
@@ -97,9 +115,10 @@ async def delete_match_auto_data(team_number: int, match_number: int):
         return {"ok": True}
     
 
-async def delete_team_auto_data(team_number: int):
+async def delete_team_auto_data(year: int, team_number: int):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
+            Auto_Data.year == year,
             Auto_Data.team_number == team_number,
         )
 

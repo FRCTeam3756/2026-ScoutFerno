@@ -23,21 +23,21 @@ async def create_interview_data(interview_data: Interview_Data_Create):
             )
 
 
-async def read_interview_data(competition: str, year: int, flagError: bool = True):
+async def read_interview_data(year: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
-            Interview_Data.competition == competition,
             Interview_Data.year == year
         )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Data not found")
         return results
+    
 
-
-async def read_interview_data_by_team(team_number: int, flagError: bool = True):
+async def read_interview_data_by_team(year: int, team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
+            Interview_Data.year == year,
             Interview_Data.team_number == team_number
         )
         results = session.exec(statement).all()
@@ -46,9 +46,10 @@ async def read_interview_data_by_team(team_number: int, flagError: bool = True):
         return results
     
 
-async def update_interview_data(team_number: int, interview_data: Interview_Data_Update):
+async def update_interview_data(year: int, team_number: int, interview_data: Interview_Data_Update):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
+            Interview_Data.year == year,
             Interview_Data.team_number == team_number
         )
 
@@ -67,9 +68,10 @@ async def update_interview_data(team_number: int, interview_data: Interview_Data
         return db_interview_data
     
 
-async def delete_interview_data(team_number: int):
+async def delete_interview_data(year: int, team_number: int):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
+            Interview_Data.year == year,
             Interview_Data.team_number == team_number
         )
 

@@ -6,28 +6,28 @@ from ..models.all_data_models import All_Data
 
 async def read_all_data(year: int):
     interview = list(await read_interview_data(year, False))
-    auto = list(await read_auto_data())
-    teleop = list(await read_teleop_data())
+    auto = list(await read_auto_data(year, False))
+    teleop = list(await read_teleop_data(year, False))
     return All_Data(auto=auto, interview=interview, teleop=teleop)
 
 
-async def read_all_data_by_match(competition: str, year: int, match_number: int):
-    interview = list(await read_interview_data(competition, year, False))
-    auto = list(await read_auto_data_by_match(match_number, False))
-    teleop = list(await read_teleop_data_by_match(match_number, False))
+async def read_all_data_by_match(year: int, competition: str, match_number: int):
+    interview = list(await read_interview_data(year, False))
+    auto = list(await read_auto_data_by_match(year, competition, match_number, False))
+    teleop = list(await read_teleop_data_by_match(year, competition, match_number, False))
     return All_Data(auto=auto, interview=interview, teleop=teleop)
 
 
-async def read_all_data_by_team(team_number: int):
-    interview = list(await read_interview_data_by_team(team_number, False))
-    auto = list(await read_auto_data_by_team(team_number, False))
-    teleop = list(await read_teleop_data_by_team(team_number, False))
+async def read_all_data_by_team(year: int, team_number: int):
+    interview = list(await read_interview_data_by_team(year, team_number, False))
+    auto = list(await read_auto_data_by_team(year, team_number, False))
+    teleop = list(await read_teleop_data_by_team(year, team_number, False))
 
     return All_Data(auto=auto, interview=interview, teleop=teleop)
 
 
-async def read_all_data_by_team_match(team_number: int, match_number: int):
-    interview = list(await read_interview_data_by_team(team_number, False))
-    auto = list(await read_auto_data_by_team_match(team_number, match_number, False))
-    teleop = list(await read_teleop_data_by_team_match(team_number, match_number, False))
+async def read_all_data_by_team_match(year: int, competition: str, team_number: int, match_number: int):
+    interview = list(await read_interview_data_by_team(year, team_number, False))
+    auto = list(await read_auto_data_by_team_match(year, competition, team_number, match_number, False))
+    teleop = list(await read_teleop_data_by_team_match(year, competition, team_number, match_number, False))
     return All_Data(auto=auto, interview=interview, teleop=teleop)
