@@ -46,11 +46,12 @@ async def read_auto_data_by_team(year: int, team_number: int, flagError: bool = 
         return results
      
 
-async def read_auto_data_by_match(year: int, competition: str, match_number: int, flagError: bool = True):
+async def read_auto_data_by_match(year: int, competition: str, match_type: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.year == year,
             Auto_Data.competition == competition,
+            Auto_Data.match_type == match_type,
             Auto_Data.match_number == match_number
             )
         results = session.exec(statement).all()
@@ -59,12 +60,13 @@ async def read_auto_data_by_match(year: int, competition: str, match_number: int
         return results
     
 
-async def read_auto_data_by_team_match(year: int, competition: str, team_number: int, match_number: int, flagError: bool = True):
+async def read_auto_data_by_team_match(year: int, competition: str, team_number: int, match_type: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.year == year,
             Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
+            Auto_Data.match_type == match_type,
             Auto_Data.match_number == match_number
             )
         results = session.exec(statement).all()
@@ -73,12 +75,13 @@ async def read_auto_data_by_team_match(year: int, competition: str, team_number:
         return results
 
 
-async def update_auto_data(year: int, competition: str, team_number: int, match_number: int, match_data: Auto_Data_Update):
+async def update_auto_data(year: int, competition: str, team_number: int, match_type: str, match_number: int, match_data: Auto_Data_Update):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.year == year,
             Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
+            Auto_Data.match_type == match_type,
             Auto_Data.match_number == match_number
         )
 
@@ -97,12 +100,13 @@ async def update_auto_data(year: int, competition: str, team_number: int, match_
         return db_match
 
 
-async def delete_match_auto_data(year: int, competition: str, team_number: int, match_number: int):
+async def delete_match_auto_data(year: int, competition: str, team_number: int, match_type: str, match_number: int):
     with Session(team_engine) as session:
         statement = select(Auto_Data).where(
             Auto_Data.year == year,
             Auto_Data.competition == competition,
             Auto_Data.team_number == team_number,
+            Auto_Data.match_type == match_type,
             Auto_Data.match_number == match_number
         )
 

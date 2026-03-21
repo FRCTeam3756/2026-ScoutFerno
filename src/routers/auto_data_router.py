@@ -27,28 +27,28 @@ async def read_auto_data_by_team_route(year: int, team_number: int):
     return await read_auto_data_by_team(year, team_number)
 
 
-@router.get("/auto_data/year/{year}/competition/{competition}/match/{match_number}", response_model=list[Auto_Data])
+@router.get("/auto_data/year/{year}/competition/{competition}/match/{match_type}/{match_number}", response_model=list[Auto_Data])
 # async def read_auto_data_by_match_route(match_number: int, creds: Credentials = Depends(require_auth)):
-async def read_auto_data_by_match_route(year: int, competition: str, match_number: int):
-    return await read_auto_data_by_match(year, competition, match_number)
+async def read_auto_data_by_match_route(year: int, competition: str, match_type: str, match_number: int):
+    return await read_auto_data_by_match(year, competition, match_type, match_number)
 
 
-@router.get("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_number}", response_model=list[Auto_Data])
+@router.get("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_type}/{match_number}", response_model=list[Auto_Data])
 # async def read_auto_data_by_team_match_route(team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
-async def read_auto_data_by_team_match_route(year: int, competition: str, team_number: int, match_number: int):
-    return await read_auto_data_by_team_match(year, competition, team_number, match_number)
+async def read_auto_data_by_team_match_route(year: int, competition: str, team_number: int, match_type: str, match_number: int):
+    return await read_auto_data_by_team_match(year, competition, team_number, match_type, match_number)
 
 
-@router.patch("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_number}", response_model=Auto_Data)
+@router.patch("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_type}/{match_number}", response_model=Auto_Data)
 # async def update_auto_data_route(team_number: int, match_number: int, match_data: Auto_Data_Update, creds: Credentials = Depends(require_auth)):
-async def update_auto_data_route(year: int, competition: str, team_number: int, match_number: int, match_data: Auto_Data_Update):
-    return await update_auto_data(year, competition, team_number, match_number, match_data)
+async def update_auto_data_route(year: int, competition: str, team_number: int, match_type: str, match_number: int, match_data: Auto_Data_Update):
+    return await update_auto_data(year, competition, team_number, match_type, match_number, match_data)
 
 
-@router.delete("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_number}")
+@router.delete("/auto_data/year/{year}/competition/{competition}/team/{team_number}/match/{match_type}/{match_number}")
 # async def delete_match_auto_data_route(team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_match_auto_data_route(year: int, competition: str, team_number: int, match_number: int):
-    return await delete_match_auto_data(year, competition, team_number, match_number)
+async def delete_match_auto_data_route(year: int, competition: str, team_number: int, match_type: str, match_number: int):
+    return await delete_match_auto_data(year, competition, team_number, match_type, match_number)
 
 
 @router.delete("/auto_data/year/{year}/team/{team_number}")
