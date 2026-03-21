@@ -4,15 +4,15 @@ from .teleop_data_crud import read_teleop_data, read_teleop_data_by_match, read_
 from ..models.all_data_models import All_Data
 
 
-async def read_all_data():
-    interview = list(await read_interview_data())
+async def read_all_data(year: int):
+    interview = list(await read_interview_data(year, False))
     auto = list(await read_auto_data())
     teleop = list(await read_teleop_data())
     return All_Data(auto=auto, interview=interview, teleop=teleop)
 
 
-async def read_all_data_by_match(match_number: int):
-    interview = list(await read_interview_data())
+async def read_all_data_by_match(competition: str, year: int, match_number: int):
+    interview = list(await read_interview_data(competition, year, False))
     auto = list(await read_auto_data_by_match(match_number, False))
     teleop = list(await read_teleop_data_by_match(match_number, False))
     return All_Data(auto=auto, interview=interview, teleop=teleop)
