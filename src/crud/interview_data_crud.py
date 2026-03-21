@@ -2,13 +2,13 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from ..models.interview_data_models import Interview_Match_Data, Interview_Match_Data_Create, Interview_Match_Data_Update
+from ..models.interview_data_models import Interview_Data, Interview_Data_Create, Interview_Data_Update
 from ..models.sql_models import team_engine
 
 
-async def create_interview_match_data(interview_match_data: Interview_Match_Data_Create):
+async def create_interview_data(interview_data: Interview_Data_Create):
     with Session(team_engine) as session:
-        db_data = Interview_Match_Data.model_validate(interview_match_data)
+        db_data = Interview_Data.model_validate(interview_data)
         session.add(db_data)
 
         try:
@@ -23,53 +23,53 @@ async def create_interview_match_data(interview_match_data: Interview_Match_Data
             )
 
 
-async def read_interview_match_data():
+async def read_interview_data():
     with Session(team_engine) as session:
-        interview_match_data = session.exec(select(Interview_Match_Data)).all()
-        return interview_match_data
+        interview_data = session.exec(select(Interview_Data)).all()
+        return interview_data
 
 
-async def read_interview_match_data_by_team(team_number: int):
+async def read_interview_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Interview_Match_Data).where(Interview_Match_Data.team_number == team_number)
+        statement = select(Interview_Data).where(Interview_Data.team_number == team_number)
         results = session.exec(statement).all()
-        if not results:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
     
 
-async def update_interview_match_data(team_number: int, interview_match_data: Interview_Match_Data_Update):
+async def update_interview_data(team_number: int, interview_data: Interview_Data_Update):
     with Session(team_engine) as session:
-        statement = select(Interview_Match_Data).where(
-            Interview_Match_Data.team_number == team_number
+        statement = select(Interview_Data).where(
+            Interview_Data.team_number == team_number
         )
 
-        db_interview_match_data = session.exec(statement).first()
+        db_interview_data = session.exec(statement).first()
 
-        if not db_interview_match_data:
+        if not db_interview_data:
             raise HTTPException(status_code=404, detail="Team data not found")
         
-        interview_match_data_data = interview_match_data.model_dump(exclude_unset=True)
-        db_interview_match_data.sqlmodel_update(interview_match_data_data)
+        interview_data_data = interview_data.model_dump(exclude_unset=True)
+        db_interview_data.sqlmodel_update(interview_data_data)
 
-        session.add(db_interview_match_data)
+        session.add(db_interview_data)
         session.commit()
-        session.refresh(db_interview_match_data)
+        session.refresh(db_interview_data)
 
-        return db_interview_match_data
+        return db_interview_data
     
 
-async def delete_interview_match_data(team_number: int):
+async def delete_interview_data(team_number: int):
     with Session(team_engine) as session:
-        statement = select(Interview_Match_Data).where(
-            Interview_Match_Data.team_number == team_number
+        statement = select(Interview_Data).where(
+            Interview_Data.team_number == team_number
         )
 
-        interview_match_data = session.exec(statement).first()
+        interview_data = session.exec(statement).first()
        
-        if not interview_match_data:
+        if not interview_data:
             raise HTTPException(status_code=404, detail="Data not found")
-        session.delete(interview_match_data)
+        session.delete(interview_data)
         session.commit()
         return {"ok": True}
 

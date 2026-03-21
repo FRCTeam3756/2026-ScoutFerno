@@ -3,10 +3,9 @@ from sqlalchemy import UniqueConstraint
 from pydantic import model_validator
 from typing import Any, cast
 
-class Auto_Data_Base(SQLModel):
-    team_number: int = Field(index=True)
-    match_number: int = Field(index=True)
-    #Auto Data
+from .sql_models import Database_Data_Plus
+
+class Auto_Data_Base(Database_Data_Plus):
     does_it_work: bool = Field(index=True) # Can delete later... part of auto type?
     auto_type: str = Field(index=True) # Shoot -> Climb? Collect -> Shoot -> Climb? Collect -> Shoot? Nothing?
     auto_fuel_scored: float = Field(default=0.0, index=True) # Increments of .05 (5%), and multiply with total amount

@@ -1,7 +1,8 @@
 from sqlmodel import SQLModel, Field
 
-class Interview_Match_Data_Base(SQLModel):
-    team_number: int = Field(index=True)
+from .sql_models import Database_Data
+
+class Interview_Data_Base(Database_Data):
     ball_storage: int = Field(index=True) # Rough amount
     drivetrain_type: str = Field(index=True) # Tank or Swerve
     shooter_type: str = Field(index=True) # Turret or Shooter
@@ -12,15 +13,15 @@ class Interview_Match_Data_Base(SQLModel):
     field_elements_useabillity: str = Field(index=True) # Can it go over bump, under trench or both?
     climb_type: str = Field(index=True) # Arm, Flippy thing, Thunderstamps, etc= Field(index=True)
 
-class Interview_Match_Data(Interview_Match_Data_Base, table=True):
+class Interview_Data(Interview_Data_Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
 
-class Interview_Match_Data_Create(Interview_Match_Data_Base):
+class Interview_Data_Create(Interview_Data_Base):
     pass
 
 
-class Interview_Match_Data_Update(SQLModel):
+class Interview_Data_Update(SQLModel):
     ball_storage: int | None = None 
     drivetrain_type: str | None = None
     shooter_type: str | None = None 

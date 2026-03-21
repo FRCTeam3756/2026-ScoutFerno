@@ -30,32 +30,32 @@ async def read_teleop_data():
 
 
 
-async def read_teleop_data_by_team(team_number: int):
+async def read_teleop_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Teleop_Data).where(Teleop_Data.team_number == team_number)
         results = session.exec(statement).all()
-        if not results:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
     
 
-async def read_teleop_data_by_match(match_number: int):
+async def read_teleop_data_by_match(match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Teleop_Data).where(Teleop_Data.match_number == match_number)
         results = session.exec(statement).all()
-        if not results:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Match data not found")
         return results
     
 
-async def read_teleop_data_by_team_match(team_number: int, match_number: int):
+async def read_teleop_data_by_team_match(team_number: int, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Teleop_Data).where(
             Teleop_Data.team_number == team_number,
             Teleop_Data.match_number == match_number
             )
         results = session.exec(statement).all()
-        if not results:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Team match data not found")
         return results
 

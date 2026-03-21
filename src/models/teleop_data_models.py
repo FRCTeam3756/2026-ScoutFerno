@@ -3,10 +3,9 @@ from sqlalchemy import UniqueConstraint
 from pydantic import model_validator
 from typing import Any, cast
 
-class Teleop_Data_Base(SQLModel):
-    team_number: int = Field(index=True)
-    match_number: int = Field(index=True)
-    #Teleop Data
+from .sql_models import Database_Data_Plus
+
+class Teleop_Data_Base(Database_Data_Plus):
     teleop_fuel_scored: float = Field(default=0.0, index=True) # Increments of .05 (5%), and multiply with total
     total_teleop_fuel_scored: int = Field(default=0, index=True)
     team_teleop_fuel_scored: float | None = Field(default=None, index=True)
