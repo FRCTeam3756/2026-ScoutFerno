@@ -21,3 +21,5 @@ class Database_Data(SQLModel):
 class Database_Data_Plus(Database_Data):
     match_number: int = Field(index=True)
     match_type: str = Field(index=True)
+    winner: str = Field(index=True)
+    alliance: str = Field(index=True)
