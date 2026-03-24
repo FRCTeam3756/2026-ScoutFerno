@@ -12,16 +12,6 @@ def create_team_db_and_tables():
     SQLModel.metadata.create_all(team_engine)
 
 
-scout_sqlite_file_name = "src/database/scout_data.db"
-scout_sqlite_url = f"sqlite:///{scout_sqlite_file_name}"
-
-scout_connect_args = {"check_same_thread": False}
-scout_engine = create_engine(scout_sqlite_url, echo=True, connect_args=scout_connect_args)
-
-
-def create_scout_db_and_tables():
-    SQLModel.metadata.create_all(scout_engine)
-
 class Database_Data(SQLModel):
     team_number: int = Field(index=True)
     competition: str = Field(index=True)

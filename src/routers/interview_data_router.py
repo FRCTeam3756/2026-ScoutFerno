@@ -3,7 +3,7 @@ from fastapi import APIRouter
 # from google.oauth2.credentials import Credentials
 
 # from ..security.google_auth_guard import require_auth
-from ..crud.interview_data_crud import create_interview_data, read_interview_data, update_interview_data, delete_interview_data, read_interview_data_by_team
+from ..crud.postmatch_data_crud import create_interview_data, read_interview_data, update_interview_data, delete_interview_data, read_interview_data_by_team
 from ..models.interview_data_models import Interview_Data, Interview_Data_Create, Interview_Data_Update
 
 

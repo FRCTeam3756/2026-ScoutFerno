@@ -5,5 +5,5 @@ from .teleop_data_models import Teleop_Data
 
 class All_Data(BaseModel):
     auto: list[Auto_Data]
-    interview: list[Interview_Data]
+    postmatch: list[Interview_Data]
     teleop: list[Teleop_Data]
