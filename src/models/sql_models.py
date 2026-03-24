@@ -15,11 +15,7 @@ def create_team_db_and_tables():
 class Database_Data(SQLModel):
     team_number: int = Field(index=True)
     competition: str = Field(index=True)
-    year: int = Field(index=True)
 
 
 class Database_Data_Plus(Database_Data):
     match_number: int = Field(index=True)
-    match_type: str = Field(index=True)
-    winner: str = Field(index=True)
-    alliance: str = Field(index=True)

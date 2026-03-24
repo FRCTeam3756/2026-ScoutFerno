@@ -14,7 +14,7 @@ class Teleop_Data_Base(Database_Data_Plus):
     teleop_climb: int = Field(index=True) # Level 1, 2 or 3, 0 = didn't climb
     climb_speed: str = Field(index=True) # Fast, Medium, Slow
     driver_skill: str = Field(index=True) # Amazing, good, decent, okay, terrible
-   
+
     @model_validator(mode="before")
     @classmethod
     def compute_team_teleop_fuel_scored(cls, values: Any) -> Any:

@@ -1,31 +1,31 @@
 from sqlmodel import Field,  SQLModel
 from sqlalchemy import UniqueConstraint
-from pydantic import model_validator
-from typing import Any, cast
+# from pydantic import model_validator
+# from typing import Any, cast
 
 from .sql_models import Database_Data_Plus
 
 class Auto_Data_Base(Database_Data_Plus):
-    does_it_work: bool = Field(index=True) # Can delete later... part of auto type?
-    auto_type: str = Field(index=True) # Shoot -> Climb? Collect -> Shoot -> Climb? Collect -> Shoot? Nothing?
-    auto_fuel_scored: float = Field(default=0.0, index=True) # Increments of .05 (5%), and multiply with total amount
-    total_auto_fuel_scored: int = Field(default=0, index=True)
-    team_auto_fuel_scored: float | None = Field(default=None, index=True)
-    auto_climb: int = Field(index=True) # Level 1, 2 or 3, 0 = didn't climb
+    auto_fuel_scored: int | None = Field(default=None, index =True)
+    auto_collection_location: str | None = Field(default=None, index =True)
+    auto_addition_actions: str | None = Field(default=None, index =True)
+    auto_stuck: bool | None = Field(default=None, index =True)
+    auto_climbed: bool | None = Field(default=None, index =True)
+    alliance_won_auto: bool | None = Field(default=None, index =True)
 
-    @model_validator(mode="before")
-    @classmethod
-    def compute_team_auto_fuel_scored(cls, values: Any) -> Any:
-        if isinstance(values, dict):
-            values_dict = cast(dict[str, Any], values)
-            fuel = float(values_dict.get("auto_fuel_scored", 0))
-            total = int(values_dict.get("total_auto_fuel_scored", 0))
-            values_dict["team_auto_fuel_scored"] = fuel * total
-        else:
-            fuel = getattr(values, "auto_fuel_scored", 0)
-            total = getattr(values, "total_auto_fuel_scored", 0)
-            values.team_auto_fuel_scored = fuel * total
-        return cast(dict[str, Any], values)
+    # @model_validator(mode="before")
+    # @classmethod
+    # def compute_team_auto_fuel_scored(cls, values: Any) -> Any:
+    #     if isinstance(values, dict):
+    #         values_dict = cast(dict[str, Any], values)
+    #         fuel = float(values_dict.get("auto_fuel_scored", 0))
+    #         total = int(values_dict.get("total_auto_fuel_scored", 0))
+    #         values_dict["team_auto_fuel_scored"] = fuel * total
+    #     else:
+    #         fuel = getattr(values, "auto_fuel_scored", 0)
+    #         total = getattr(values, "total_auto_fuel_scored", 0)
+    #         values.team_auto_fuel_scored = fuel * total
+    #     return cast(dict[str, Any], values)
     
 class Auto_Data(Auto_Data_Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -38,10 +38,14 @@ class Auto_Data_Create(Auto_Data_Base):
 
 
 class Auto_Data_Update(SQLModel):
-    does_it_work: bool | None = None
-    auto_type: str | None = None
-    auto_fuel_scored: float | None = None
-    auto_climb: int | None = None
+    auto_fuel_scored: int | None = None
+    auto_collection_location: str | None = None
+    auto_addition_actions: str | None = None
+    auto_stuck: bool | None = None
+    auto_climbed: bool | None = None
+    alliance_won_auto: bool | None = None
+
+
 
 
 
