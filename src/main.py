@@ -9,7 +9,7 @@ app = FastAPI(lifespan=team_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_orgins=["https://scouting.ramferno.com"], #Gabe, include link to domain and CF worker URL
+    allow_orgins=["https://api.ramferno.com"], #Gabe, include link to domain and CF worker URL
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"]
