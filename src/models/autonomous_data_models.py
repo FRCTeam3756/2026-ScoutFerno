@@ -5,7 +5,7 @@ from sqlalchemy import UniqueConstraint
 
 from .sql_models import Database_Data_Plus
 
-class Auto_Data_Base(Database_Data_Plus):
+class Autonomous_Data_Base(Database_Data_Plus):
     auto_fuel_scored: int | None = Field(default=None, index =True)
     auto_collection_location: str | None = Field(default=None, index =True)
     auto_addition_actions: str | None = Field(default=None, index =True)
@@ -27,17 +27,17 @@ class Auto_Data_Base(Database_Data_Plus):
     #         values.team_auto_fuel_scored = fuel * total
     #     return cast(dict[str, Any], values)
     
-class Auto_Data(Auto_Data_Base, table=True):
+class Autonomous_Data(Autonomous_Data_Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
     __table_args__ = (
         UniqueConstraint("team_number", "match_number", name="data_creation_constraint"),
     )
     
-class Auto_Data_Create(Auto_Data_Base):
+class Autonomous_Data_Create(Autonomous_Data_Base):
     pass
 
 
-class Auto_Data_Update(SQLModel):
+class Autonomous_Data_Update(SQLModel):
     auto_fuel_scored: int | None = None
     auto_collection_location: str | None = None
     auto_addition_actions: str | None = None

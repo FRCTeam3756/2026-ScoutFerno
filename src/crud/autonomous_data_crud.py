@@ -2,13 +2,13 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from ..models.auto_data_models import Auto_Data, Auto_Data_Create, Auto_Data_Update
+from ..models.autonomous_data_models import Autonomous_Data, Autonomous_Data_Create, Autonomous_Data_Update
 from ..models.sql_models import team_engine
 
 
-async def create_auto_data(match_data: Auto_Data_Create):
+async def create_autonomous_data(match_data: Autonomous_Data_Create):
     with Session(team_engine) as session:
-        db_data = Auto_Data.model_validate(match_data)
+        db_data = Autonomous_Data.model_validate(match_data)
         session.add(db_data)
 
         try:
@@ -23,9 +23,9 @@ async def create_auto_data(match_data: Auto_Data_Create):
             )
 
 
-async def read_auto_data(flagError: bool = True):
+async def read_autonomous_data(flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
+        statement = select(Autonomous_Data).where(
             )
         results = session.exec(statement).all()
         if flagError and not results:
@@ -33,10 +33,10 @@ async def read_auto_data(flagError: bool = True):
         return results
 
 
-async def read_auto_data_by_team(team_number: int, flagError: bool = True):
+async def read_autonomous_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.team_number == team_number
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.team_number == team_number
             )
         results = session.exec(statement).all()
         if flagError and not results:
@@ -44,11 +44,11 @@ async def read_auto_data_by_team(team_number: int, flagError: bool = True):
         return results
      
 
-async def read_auto_data_by_match(competition: str, match_number: int, flagError: bool = True):
+async def read_autonomous_data_by_match(competition: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.competition == competition,
-            Auto_Data.match_number == match_number
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.competition == competition,
+            Autonomous_Data.match_number == match_number
             )
         results = session.exec(statement).all()
         if flagError and not results:
@@ -56,12 +56,12 @@ async def read_auto_data_by_match(competition: str, match_number: int, flagError
         return results
     
 
-async def read_auto_data_by_team_match(competition: str, team_number: int, match_number: int, flagError: bool = True):
+async def read_autonomous_data_by_team_match(competition: str, team_number: int, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.competition == competition,
-            Auto_Data.team_number == team_number,
-            Auto_Data.match_number == match_number
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.competition == competition,
+            Autonomous_Data.team_number == team_number,
+            Autonomous_Data.match_number == match_number
             )
         results = session.exec(statement).all()
         if flagError and not results:
@@ -69,12 +69,12 @@ async def read_auto_data_by_team_match(competition: str, team_number: int, match
         return results
 
 
-async def update_auto_data(competition: str, team_number: int, match_number: int, match_data: Auto_Data_Update):
+async def update_autonomous_data(competition: str, team_number: int, match_number: int, match_data: Autonomous_Data_Update):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.competition == competition,
-            Auto_Data.team_number == team_number,
-            Auto_Data.match_number == match_number
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.competition == competition,
+            Autonomous_Data.team_number == team_number,
+            Autonomous_Data.match_number == match_number
         )
 
         db_match = session.exec(statement).first()
@@ -92,12 +92,12 @@ async def update_auto_data(competition: str, team_number: int, match_number: int
         return db_match
 
 
-async def delete_match_auto_data(competition: str, team_number: int, match_number: int):
+async def delete_match_autonomous_data(competition: str, team_number: int, match_number: int):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.competition == competition,
-            Auto_Data.team_number == team_number,
-            Auto_Data.match_number == match_number
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.competition == competition,
+            Autonomous_Data.team_number == team_number,
+            Autonomous_Data.match_number == match_number
         )
 
         match_data = session.exec(statement).first()
@@ -109,10 +109,10 @@ async def delete_match_auto_data(competition: str, team_number: int, match_numbe
         return {"ok": True}
     
 
-async def delete_team_auto_data(team_number: int):
+async def delete_team_autonomous_data(team_number: int):
     with Session(team_engine) as session:
-        statement = select(Auto_Data).where(
-            Auto_Data.team_number == team_number,
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.team_number == team_number,
         )
 
         team_match_data = session.exec(statement).all()
