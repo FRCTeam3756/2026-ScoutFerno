@@ -9,9 +9,8 @@ class Autonomous_Data_Base(Database_Data_Plus):
     auto_fuel_scored: int | None = Field(default=None, index =True)
     auto_collection_location: str | None = Field(default=None, index =True)
     auto_addition_actions: str | None = Field(default=None, index =True)
-    auto_stuck: bool | None = Field(default=None, index =True)
-    auto_climbed: bool | None = Field(default=None, index =True)
-    alliance_won_auto: bool | None = Field(default=None, index =True)
+    auto_stuck: bool | None = Field(default=False, index =True)
+    auto_climbed: str | None = Field(default=None, index =True)
 
     # @model_validator(mode="before")
     # @classmethod
@@ -43,7 +42,7 @@ class Autonomous_Data_Update(SQLModel):
     auto_addition_actions: str | None = None
     auto_stuck: bool | None = None
     auto_climbed: bool | None = None
-    alliance_won_auto: bool | None = None
+
 
 
 

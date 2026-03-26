@@ -6,9 +6,11 @@ from sqlalchemy import UniqueConstraint
 from .sql_models import Database_Data_Plus
 
 class Teleop_Data_Base(Database_Data_Plus):
-    teleop_fuel_scored: int = Field(default=0.0, index=True) # Increments of .05 (5%), and multiply with tota
+    alliance_won_auto: bool | None = Field(default=None, index=True)
+    teleop_fuel_scored: int | None = Field(default=0, index=True) # Increments of .05 (5%), and multiply with tota
+    field_usibillity: str | None = Field(default=None, index=True)
     defended_by_oponenet: bool | None = Field(default=None, index=True)
-    feul_fed_passed: int | None = Field(default=None, index=True)
+    fuel_fed_passed: int | None = Field(default=None, index=True)
     opp_zone_actions: str | None = Field(default=None, index=True)
 
     # @model_validator(mode="before")
@@ -36,11 +38,12 @@ class Teleop_Data_Create(Teleop_Data_Base):
 
 
 class Teleop_Data_Update(SQLModel):
+    alliance_won_auto: bool | None = None
     teleop_fuel_scored: int | None = None
-    shooting_posistion: str | None = None
-    moving_shoot: bool | None = None
-    teleop_climb: int | None = None
-    climb_speed: str | None = None
-    driver_skill: str | None = None
+    field_usibillity: str | None = None
+    defended_by_oponenet: bool | None = None
+    fuel_fed_passed: int | None = None
+    opp_zone_actions: str | None = None
+
 
 

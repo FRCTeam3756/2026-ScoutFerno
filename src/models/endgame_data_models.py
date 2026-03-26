@@ -6,6 +6,9 @@ from .sql_models import Database_Data_Plus
 class Endgame_Data_Base(Database_Data_Plus):
     climbed: bool | None =  Field(default=False, index = True)
     climb_Position: int | None = Field(default=None, index = True)
+    mechanical_issue: bool | None =Field(default=False, index = True)
+    died: bool | None =Field(default=False, index = True)
+    tripped_fell_over: bool | None =Field(default=False, index = True)
 class Endgame_Data(Endgame_Data_Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
     __table_args__ = (
@@ -17,5 +20,8 @@ class Endgame_Data_Create(Endgame_Data_Base):
 
 
 class Endgame_Data_Update(SQLModel):
-     climbed: bool | None = None
-     climb_Position: int | None = None
+    climbed: bool | None = None
+    climb_Position: int | None = None
+    mechanical_issue: bool | None = None
+    died: bool | None = None
+    tripped_fell_over: bool | None = None
