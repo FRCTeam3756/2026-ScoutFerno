@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 # from ..security.google_auth_guard import require_auth
 from ..models.prematch_data_models import Prematch_Data, Prematch_Data_Create, Prematch_Data_Update
-from ..crud.prematch_data_crud import create_prematch_data, delete_team_prematch_data, delete_match_prematch_data, update_prematch_data, read_prematch_data, read_prematch_data_by_team, read_prematch_data_by_match, read_prematch_data_by_team_match
+from ..crud.prematch_data_crud import create_prematch_data, delete_prematch_data_by_match, delete_prematch_data_by_team, delete_prematch_data_by_team_match, update_prematch_data, read_prematch_data, read_prematch_data_by_team, read_prematch_data_by_match, read_prematch_data_by_team_match
 
 router = APIRouter(prefix="/data", tags=["Data"])
 
@@ -45,13 +45,19 @@ async def update_prematch_data_route(competition: str, team_number: int, match_n
     return await update_prematch_data(competition, team_number, match_number, match_data)
 
 
-@router.delete("/prematch_data/competition/{competition}/team/{team_number}/match/{match_number}")
-# async def delete_match_prematch_data_route(team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_match_prematch_data_route(competition: str, team_number: int, match_number: int):
-    return await delete_match_prematch_data(competition, team_number, match_number)
+@router.delete("/prematch_data/competition/{competition}/match/{match_number}")
+# async def delete_prematch_data_by_match_route(competition: str, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_prematch_data_by_match_route(competition: str, match_number: int):
+    return await delete_prematch_data_by_match(competition, match_number)
 
 
 @router.delete("/prematch_data/team/{team_number}")
-# async def delete_team_prematch_data_route(team_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_team_prematch_data_route(team_number: int):
-    return await delete_team_prematch_data(team_number)
+# async def delete_prematch_data_by_team_route(team_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_prematch_data_by_team_route(team_number: int):
+    return await delete_prematch_data_by_team(team_number)
+
+
+@router.delete("/prematch_data/competition/{competition}/team/{team_number}/match/{match_number}")
+# async def delete_prematch_data_by_team_match_route(competition: str, team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_prematch_data_by_team_match_route(competition: str, team_number: int, match_number: int):
+    return await delete_prematch_data_by_team_match(competition, team_number, match_number)

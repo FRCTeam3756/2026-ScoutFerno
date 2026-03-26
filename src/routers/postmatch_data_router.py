@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 # from ..security.google_auth_guard import require_auth
 from ..models.postmatch_data_models import Postmatch_Data, Postmatch_Data_Create, Postmatch_Data_Update
-from ..crud.postmatch_data_crud import create_postmatch_data, delete_team_postmatch_data, delete_match_postmatch_data, update_postmatch_data, read_postmatch_data, read_postmatch_data_by_team, read_postmatch_data_by_match, read_postmatch_data_by_team_match
+from ..crud.postmatch_data_crud import create_postmatch_data, delete_postmatch_data_by_match, delete_postmatch_data_by_team, delete_postmatch_data_by_team_match, update_postmatch_data, read_postmatch_data, read_postmatch_data_by_team, read_postmatch_data_by_match, read_postmatch_data_by_team_match
 
 router = APIRouter(prefix="/data", tags=["Data"])
 
@@ -45,13 +45,19 @@ async def update_postmatch_data_route(competition: str, team_number: int, match_
     return await update_postmatch_data(competition, team_number, match_number, match_data)
 
 
-@router.delete("/postmatch_data/competition/{competition}/team/{team_number}/match/{match_number}")
-# async def delete_match_postmatch_data_route(team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_match_postmatch_data_route(competition: str, team_number: int, match_number: int):
-    return await delete_match_postmatch_data(competition, team_number, match_number)
+@router.delete("/postmatch_data/competition/{competition}/match/{match_number}")
+# async def delete_postmatch_data_by_match_route(competition: str, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_postmatch_data_by_match_route(competition: str, match_number: int):
+    return await delete_postmatch_data_by_match(competition, match_number)
 
 
 @router.delete("/postmatch_data/team/{team_number}")
-# async def delete_team_postmatch_data_route(team_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_team_postmatch_data_route(team_number: int):
-    return await delete_team_postmatch_data(team_number)
+# async def delete_postmatch_data_by_team_route(team_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_postmatch_data_by_team_route(team_number: int):
+    return await delete_postmatch_data_by_team(team_number)
+
+
+@router.delete("/postmatch_data/competition/{competition}/team/{team_number}/match/{match_number}")
+# async def delete_postmatch_data_by_team_match_route(competition: str, team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_postmatch_data_by_team_match_route(competition: str, team_number: int, match_number: int):
+    return await delete_postmatch_data_by_team_match(competition, team_number, match_number)

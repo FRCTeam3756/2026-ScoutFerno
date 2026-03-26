@@ -69,7 +69,7 @@ async def read_autonomous_data_by_team_match(competition: str, team_number: int,
         return results
 
 
-async def update_autonomous_data(competition: str, team_number: int, match_number: int, match_data: Autonomous_Data_Update):
+async def update_autonomous_data(competition: str, team_number: int, match_number: int, match_data: Autonomous_Data_Update, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Autonomous_Data).where(
             Autonomous_Data.competition == competition,
@@ -92,34 +92,52 @@ async def update_autonomous_data(competition: str, team_number: int, match_numbe
         return db_match
 
 
-async def delete_match_autonomous_data(competition: str, team_number: int, match_number: int):
+async def delete_autonomous_data_by_match(competition: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Autonomous_Data).where(
             Autonomous_Data.competition == competition,
-            Autonomous_Data.team_number == team_number,
             Autonomous_Data.match_number == match_number
         )
 
-        match_data = session.exec(statement).first()
+        results = session.exec(statement).all()
 
-        if not match_data:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Data not found")
-        session.delete(match_data)
+        for match in results:
+            session.delete(match)
         session.commit()
-        return {"ok": True}
+        return results
     
 
-async def delete_team_autonomous_data(team_number: int):
+async def delete_autonomous_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Autonomous_Data).where(
             Autonomous_Data.team_number == team_number,
         )
 
-        team_match_data = session.exec(statement).all()
+        results = session.exec(statement).all()
 
-        if not team_match_data:
+        if flagError and not results:
             raise HTTPException(status_code=404, detail="Data not found")
-        for match in team_match_data:
+        for match in results:
             session.delete(match)
         session.commit()
-        return {"ok": True}
+        return results
+    
+
+async def delete_autonomous_data_by_team_match(competition: str, match_number: int, team_number: int, flagError: bool = True):
+    with Session(team_engine) as session:
+        statement = select(Autonomous_Data).where(
+            Autonomous_Data.competition == competition,
+            Autonomous_Data.match_number == match_number,
+            Autonomous_Data.team_number == team_number
+        )
+
+        results = session.exec(statement).all()
+
+        if flagError and not results:
+            raise HTTPException(status_code=404, detail="Data not found")
+        for match in results:
+            session.delete(match)
+        session.commit()
+        return results

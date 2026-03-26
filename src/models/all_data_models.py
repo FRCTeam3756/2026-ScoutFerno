@@ -27,8 +27,8 @@ class All_Data_Update(BaseModel):
     postmatch: Postmatch_Data_Update
 
 class All_Data_Delete(BaseModel):
-    prematch: Prematch_Data
-    autonomous: Autonomous_Data
-    teleop: Teleop_Data
-    endgame: Endgame_Data
-    postmatch: Postmatch_Data
+    prematch: list[Prematch_Data]
+    autonomous: list[Autonomous_Data]
+    teleop: list[Teleop_Data]
+    endgame: list[Endgame_Data]
+    postmatch: list[Postmatch_Data]

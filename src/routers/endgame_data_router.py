@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 # from ..security.google_auth_guard import require_auth
 from ..models.endgame_data_models import Endgame_Data, Endgame_Data_Create, Endgame_Data_Update
-from ..crud.endgame_data_crud import create_endgame_data, delete_team_endgame_data, delete_match_endgame_data, update_endgame_data, read_endgame_data, read_endgame_data_by_team, read_endgame_data_by_match, read_endgame_data_by_team_match
+from ..crud.endgame_data_crud import create_endgame_data, delete_endgame_data_by_match, delete_endgame_data_by_team, delete_endgame_data_by_team_match, update_endgame_data, read_endgame_data, read_endgame_data_by_team, read_endgame_data_by_match, read_endgame_data_by_team_match
 
 router = APIRouter(prefix="/data", tags=["Data"])
 
@@ -45,13 +45,19 @@ async def update_endgame_data_route(competition: str, team_number: int, match_nu
     return await update_endgame_data(competition, team_number, match_number, match_data)
 
 
-@router.delete("/endgame_data/competition/{competition}/team/{team_number}/match/{match_number}")
-# async def delete_match_endgame_data_route(team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_match_endgame_data_route(competition: str, team_number: int, match_number: int):
-    return await delete_match_endgame_data(competition, team_number, match_number)
+@router.delete("/endgame_data/competition/{competition}/match/{match_number}")
+# async def delete_endgame_data_by_match_route(competition: str, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_endgame_data_by_match_route(competition: str, match_number: int):
+    return await delete_endgame_data_by_match(competition, match_number)
 
 
 @router.delete("/endgame_data/team/{team_number}")
-# async def delete_team_endgame_data_route(team_number: int, creds: Credentials = Depends(require_auth)):
-async def delete_team_endgame_data_route(team_number: int):
-    return await delete_team_endgame_data(team_number)
+# async def delete_endgame_data_by_team_route(team_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_endgame_data_by_team_route(team_number: int):
+    return await delete_endgame_data_by_team(team_number)
+
+
+@router.delete("/endgame_data/competition/{competition}/team/{team_number}/match/{match_number}")
+# async def delete_endgame_data_by_team_match_route(competition: str, team_number: int, match_number: int, creds: Credentials = Depends(require_auth)):
+async def delete_endgame_data_by_team_match_route(competition: str, team_number: int, match_number: int):
+    return await delete_endgame_data_by_team_match(competition, team_number, match_number)
