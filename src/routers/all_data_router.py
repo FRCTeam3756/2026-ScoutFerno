@@ -34,8 +34,7 @@ async def read_all_data_by_team_match_route(competition: str, team_number: int, 
     return await read_all_data_by_team_match(competition, team_number, match_number)
 
 
-@router.post("/all_data/", response_model=All_Data_Create)
-# async def create_all_data_route(match_data: All_Data_Create, creds: Credentials = Depends(require_auth)):
+@router.post("/all_data/", response_model=All_Data)
 async def create_all_data_route(match_data: All_Data_Create):
     return await create_all_data(match_data)
 
