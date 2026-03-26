@@ -1,4 +1,0 @@
-TO DO:
-    - Add google oauth middle ware into fastapi and models to authenticate users
-    - Add app startup so it actually runs
-    - Figure out video storage and push/pull (Cloudflare R2?)
