@@ -10,7 +10,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 TOKEN_PATH = Path("src/security/token.json")
 CREDENTIALS_PATH = Path("src/security/oauth_credentials.json")
-SCOPES: Optional[list[str]] = None #["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES: Optional[list[str]] = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 def authenticate_google() -> Credentials:

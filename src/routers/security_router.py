@@ -46,4 +46,5 @@ def auth_status() -> dict[str, bool]:
 @router.get("/logout")
 def logout():
     if TOKEN_PATH.exists():
+        TOKEN_PATH.unlink()
         return {"message": "Logged out successfully"}
