@@ -32,7 +32,6 @@ async def read_interview_data(flagError: bool = True):
             raise HTTPException(status_code=404, detail="Data not found")
         return results
 
-
 async def read_interview_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
@@ -43,8 +42,19 @@ async def read_interview_data_by_team(team_number: int, flagError: bool = True):
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
 
+async def read_interview_data_by_team_competition(competition: str, team_number: int, flagError: bool = True):
+    with Session(team_engine) as session:
+        statement = select(Interview_Data).where(
+            Interview_Data.team_number == team_number,
+            Interview_Data.competition == competition
+            )
+        results = session.exec(statement).all()
+        if flagError and not results:
+            raise HTTPException(status_code=404, detail="Team data not found")
+        return results
 
-async def update_interview_data(competition: str, team_number: int, match_data: Interview_Data_Update):
+
+async def update_interview_data(competition: str, team_number: int):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.competition == competition,
@@ -55,9 +65,6 @@ async def update_interview_data(competition: str, team_number: int, match_data: 
 
         if not db_match:
             raise HTTPException(status_code=404, detail="Team data not found")
-
-        update_data = match_data.model_dump(exclude_unset=True)
-        db_match.sqlmodel_update(update_data)
 
         session.add(db_match)
         session.commit()

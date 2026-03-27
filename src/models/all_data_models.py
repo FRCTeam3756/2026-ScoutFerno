@@ -36,7 +36,7 @@ class All_Data_Delete(BaseModel):
     postmatch: list[Postmatch_Data]
 
 
-class All_Data_Inteview(BaseModel):
+class All_Data_Interview(BaseModel):
     prematch: list[Prematch_Data]
     autonomous: list[Autonomous_Data]
     teleop: list[Teleop_Data]
@@ -45,7 +45,7 @@ class All_Data_Inteview(BaseModel):
     interview: list[Interview_Data]
 
 
-class All_Data_Inteview_Delete(BaseModel):
+class All_Data_Interview_Delete(BaseModel):
     prematch: list[Prematch_Data]
     autonomous: list[Autonomous_Data]
     teleop: list[Teleop_Data]
