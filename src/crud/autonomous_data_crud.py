@@ -69,7 +69,7 @@ async def read_autonomous_data_by_team_match(competition: str, team_number: int,
         return results
 
 
-async def update_autonomous_data(competition: str, team_number: int, match_number: int, match_data: Autonomous_Data_Update, flagError: bool = True):
+async def update_autonomous_data(competition: str, team_number: int, match_number: int, match_data: Autonomous_Data_Update):
     with Session(team_engine) as session:
         statement = select(Autonomous_Data).where(
             Autonomous_Data.competition == competition,

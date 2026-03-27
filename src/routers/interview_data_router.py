@@ -24,6 +24,11 @@ async def read_interview_data_by_team_route(team_number: int, creds: Credentials
     return await read_interview_data_by_team(team_number)
 
 
+@router.get("/interview_data/competition/{competition}/team/{team_number}", response_model=list[Interview_Data])
+async def read_interview_data_by_competition_team_route(competition: str, team_number: int, creds: Credentials = Depends(require_auth)):
+    return await read_interview_data(competition, team_number)
+
+
 @router.patch("/interview_data/team/{team_number}", response_model=Interview_Data)
 async def update_interview_data_route(team_number: int, interview_data: Interview_Data_Update, creds: Credentials = Depends(require_auth)):
     return await update_interview_data(team_number, interview_data)
