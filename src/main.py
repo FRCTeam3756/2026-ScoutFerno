@@ -13,7 +13,8 @@ app.add_middleware(
     allow_origins=["https://scouting.ramferno.com",
                    "https://api.ramferno.com",
                    "http://localhost:5173",
-                   "476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com"
+                   "476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com",
+                   "bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
