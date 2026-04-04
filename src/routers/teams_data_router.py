@@ -111,6 +111,14 @@ async def read_teams_data_by_team_route(team_number: int):
     return await read_teams_data_by_team(team_number)
 
 
+@router.get("/teams_data/statbotics/competition/{competition}/team/{team_number}")
+async def read_statbotics_team_data_route(
+    competition: str,
+    team_number: int,
+):
+    return get_team_data(team_number, competition)
+
+
 @router.get(
     "/teams_data/competition/{competition}/team/{team_number}",
     response_model=list[Teams_Data],
