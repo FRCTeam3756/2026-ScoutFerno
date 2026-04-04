@@ -7,7 +7,7 @@ db_dir = base_dir / "database"
 db_dir.mkdir(exist_ok=True)
 
 team_sqlite_file_name = db_dir / "team_data.db"
-team_sqlite_url = f"sqlite:///{team_sqlite_file_name}"
+team_sqlite_url = "sqlite:///{team_sqlite_file_name}"
 
 team_connect_args = {"check_same_thread": False}
 team_engine = create_engine(team_sqlite_url, echo=True, connect_args=team_connect_args)
