@@ -1,6 +1,9 @@
+import statbotics; sb = statbotics.Statbotics()
+
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
+from typing import Any
 
 from ..models.sql_models import team_engine
 from ..models.teams_data_models import (
@@ -120,3 +123,57 @@ async def delete_teams_data_by_team_competition(
             session.delete(team_data)
         session.commit()
         return results
+
+
+async def get_team_data(team_number: int, competition: str) -> dict[str, Any]:
+    try:
+        team_data = sb.get_team_event(team_number, competition)
+    except UserWarning as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    if team_data is None:
+        raise HTTPException(status_code=404, detail="Team data not found")
+    return team_data
+
+
+async def get_team_profile(team_number: int) -> dict[str, Any]:
+    try:
+        team_profile = sb.get_team(team_number)
+    except UserWarning as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    if team_profile is None:
+        raise HTTPException(status_code=404, detail="Team profile not found")
+    return team_profile
+
+
+async def build_team_data_from_statbotics(
+    team_number: int,
+    competition: str,
+    team_profile: dict[str, Any],
+    team_event_data: dict[str, Any],
+) -> Teams_Data_Create:
+    epa = team_event_data.get("epa") or {}
+    epa_stats = epa.get("stats") or {}
+    record = team_event_data.get("record") or {}
+    total_record = record.get("total") or {}
+
+    return Teams_Data_Create(
+        team_number=team_number,
+        competition=competition,
+        name=team_profile.get("name"),
+        country=team_profile.get("country"),
+        state=team_profile.get("state"),
+        district=team_profile.get("district"),
+        rookie_year=team_profile.get("rookie_year"),
+        active=team_profile.get("active"),
+        record_wins=total_record.get("wins"),
+        record_losses=total_record.get("losses"),
+        record_ties=total_record.get("ties"),
+        record_count=total_record.get("count"),
+        record_winrate=total_record.get("winrate"),
+        norm_epa_current=epa_stats.get("pre_elim"),
+        norm_epa_recent=epa_stats.get("start"),
+        norm_epa_mean=epa_stats.get("mean"),
+        norm_epa_max=epa_stats.get("max"),
+    )
