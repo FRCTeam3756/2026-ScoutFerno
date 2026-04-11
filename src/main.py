@@ -4,7 +4,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 import uvicorn
 
 from .models.fastapi_models import team_lifespan
-from .routers import all_data_router, prematch_data_router, autonomous_data_router, teleop_data_router, endgame_data_router, postmatch_data_router, security_router, video_router, interview_data_router, teams_data_router
+from .routers import all_data_router, prematch_data_router, autonomous_data_router, teleop_data_router, endgame_data_router, postmatch_data_router, security_router, video_router, interview_data_router#, teams_data_router
 
 app = FastAPI(lifespan=team_lifespan, root_path="/api", redirect_slashes=False)
 
@@ -14,7 +14,8 @@ app.add_middleware(
                    "https://api.ramferno.com",
                    "http://localhost:5173",
                    "476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com",
-                   "bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com"
+                   "bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com",
+                   "7e6fdead-4433-4b0b-ac31-45524d5ba102.cfargotunnel.com"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -32,7 +33,7 @@ app.include_router(postmatch_data_router.router)
 app.include_router(interview_data_router.router)
 app.include_router(security_router.router)
 app.include_router(video_router.router)
-app.include_router(teams_data_router.router)
+# app.include_router(teams_data_router.router)
 
 
 @app.get("/health")
