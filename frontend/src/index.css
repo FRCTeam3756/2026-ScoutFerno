@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  overscroll-behavior: contain;
+  user-select: none;
+}
+
+@font-face {
+  font-family: 'SF Sports Night';
+  src: url('./assets/fonts/SF Sports Night.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Sports Night NS';
+  src: url('./assets/fonts/SF Sports Night NS.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  @layer base {
+    :root {
+      --background: #ffffff;
+      --foreground: #0a0a0a;
+      --card: #ffffff;
+      --card-foreground: #0a0a0a;
+      --popover: #ffffff;
+      --popover-foreground: #0a0a0a;
+      --primary: #ff7700;
+      --primary-foreground: #fef2f2;
+      --secondary: #f5f5f5;
+      --secondary-foreground: #171717;
+      --muted: #f5f5f5;
+      --muted-foreground: #737373;
+      --accent: #f5f5f5;
+      --accent-foreground: #171717;
+      --destructive: #f03e3e;
+      --destructive-foreground: #fafafa;
+      --border: #e5e5e5;
+      --input: #e5e5e5;
+      --ring: #ff7700;
+      --chart-1: #e8613a;
+      --chart-2: #2d9e87;
+      --chart-3: #2b4a5c;
+      --chart-4: #e8c04a;
+      --chart-5: #f5a03a;
+      --radius: 0.5rem;
+    }
+
+    .dark {
+      --background: #0a0a0a;
+      --foreground: #fafafa;
+      --card: #0a0a0a;
+      --card-foreground: #fafafa;
+      --popover: #0a0a0a;
+      --popover-foreground: #fafafa;
+      --primary: #c06a28;
+      --primary-foreground: #fef2f2;
+      --secondary: #262626;
+      --secondary-foreground: #fafafa;
+      --muted: #262626;
+      --muted-foreground: #a3a3a3;
+      --accent: #262626;
+      --accent-foreground: #fafafa;
+      --destructive: #6b1515;
+      --destructive-foreground: #fafafa;
+      --border: #262626;
+      --input: #262626;
+      --ring: #ff7700;
+      --chart-1: #2463cc;
+      --chart-2: #29a372;
+      --chart-3: #e07821;
+      --chart-4: #9333c9;
+      --chart-5: #d92d6b;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

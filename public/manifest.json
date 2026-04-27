@@ -1,0 +1,11 @@
+{
+  "name": "ScoutFerno",
+  "short_name": "ScoutFerno",
+  "theme_color": "#ffffff",
+  "background_color": "#f03d41",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "splash_pages": null
+}
