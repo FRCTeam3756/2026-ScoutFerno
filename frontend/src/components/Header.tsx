@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 
 type ConnectionStatus = "checking" | "connected" | "disconnected";
 
+const NAV_ITEMS = [
+  { to: "/scouting", label: "Scouters" },
+
+  { to: "/strategy", label: "Strategists" },
+] as const;
+
 function useBackendHealth(url: string, baseIntervalMs = 10000) {
   const [status, setStatus] = useState<ConnectionStatus>("checking");
 
@@ -65,24 +71,17 @@ export function Header() {
   const { label, dot, text } = statusConfig[status];
 
   return (
-    <header className="w-full bg-zinc-900 border-b border-zinc-700 px-8 py-0 flex items-stretch">
-      <NavLink
-        key={""}
-        to={""}
-        className="flex items-center"
-      >
-        <div className="pr-8 border-r border-zinc-700 mr-6">
-          <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
-            Scout<span className="text-orange-400">Ferno</span>
-          </span>
-        </div>
+    <header className="w-full bg-zinc-900 border-b border-zinc-700 px-8 py-0 flex items-center">
+      <NavLink key={""} to={""} className="flex items-center">
+        <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
+          Scout<span className="text-orange-400">Ferno</span>
+        </span>
       </NavLink>
 
-      <nav className="flex items-stretch gap-1 pt-2">
-        {[
-          { to: "/scouting", label: "Scouters" },
-          { to: "/strategy", label: "Strategists" },
-        ].map(({ to, label }) => (
+      <div className="mx-6 w-px h-4 bg-zinc-700 self-center" />
+
+      <nav className="flex items-stretch gap-1 pt-1 pb-1">
+        {NAV_ITEMS.map(({ to, label }) => (
           <NavLink
             key={to}
             to={to}
