@@ -1,6 +1,6 @@
-import { CommitAndResetSection } from "../components/Sections/CommitAndResetSection/CommitAndResetSection";
+import { CommitAndResetSection } from "../components/CommitAndResetSection";
 import { FloatingFormValue } from "../components/FloatingFormValue";
-import FormSection from "../components/Sections/FormSection";
+import FormSection from "../components/FormSection";
 import { useScoutFernoState } from "../store/store";
 
 export function Scouting() {

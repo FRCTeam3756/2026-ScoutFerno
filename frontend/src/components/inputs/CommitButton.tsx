@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Button } from "../../../components/ui/button";
-import { ListRestart } from "lucide-react";
-import { resetFields } from "../../../store/store";
-import { Modal } from "../../../components/core/Modal";
+import { Button } from "../../components/ui/button";
+import { UserRoundCheck } from "lucide-react";
+import { Modal } from "../../components/core/Modal";
+import { pushDataToBackend } from "../../store/store";
 
-export type ResetButtonProps = {
+export type CommitButtonProps = {
   disabled?: boolean;
 };
 
-export function ResetButton(props: ResetButtonProps) {
+export function CommitButton(props: CommitButtonProps) {
   const [showModal, setShowModal] = useState(false);
 
   const onConfirm = () => {
-    resetFields();
+    pushDataToBackend();
     setShowModal(false);
   };
 
@@ -27,15 +27,15 @@ export function ResetButton(props: ResetButtonProps) {
         onClick={() => setShowModal(true)}
         disabled={props.disabled}
       >
-        <ListRestart className="h-5 w-5" />
-        Reset Form
+        <UserRoundCheck className="h-5 w-5" />
+        Commit Form
       </Button>
       <Modal show={showModal} onDismiss={onCancel}>
         <div className="p-4">
           <h2 className="font-semibold text-3xl text-primary text-center font-rhr-ns tracking-wider">
-            Confirm Reset
+            Confirm Commit
           </h2>
-          <p>Are you sure you want to reset the form?</p>
+          <p>Are you sure you want to commit the form?</p>
           <div className="flex justify-end gap-2 mt-4">
             <Button
               variant="outline"
