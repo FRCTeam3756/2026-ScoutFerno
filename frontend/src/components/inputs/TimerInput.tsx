@@ -128,7 +128,7 @@ export default function TimerInput(props: ConfigurableInputProps) {
 
   return (
     <div className="my-2 flex flex-col items-center justify-center">
-      <h2 className="px-4 text-2xl dark:text-white">{formattedTime}</h2>
+      <h2 className="px-4 text-2xl">{formattedTime}</h2>
       <div className="my-2 flex flex-row items-center justify-center gap-4">
         <Button variant="outline" onClick={startStop}>
           {isRunning ? (

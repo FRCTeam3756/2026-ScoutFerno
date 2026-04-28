@@ -514,7 +514,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
       <div className="flex flex-col items-center gap-1">
         <div
           className={cn(
-            "font-mono text-3xl font-bold dark:text-white",
+            "font-mono text-3xl font-bold",
             hasAutoStopped && "text-muted-foreground"
           )}
         >

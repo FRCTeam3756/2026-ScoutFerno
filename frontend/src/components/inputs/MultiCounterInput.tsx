@@ -49,9 +49,7 @@ export default function MultiCounterInput(props: ConfigurableInputProps) {
 
   return (
     <div className="flex flex-col items-center gap-3 py-3 px-2">
-      <div className="text-4xl font-bold tabular-nums dark:text-white">
-        {value}
-      </div>
+      <div className="text-4xl font-bold tabular-nums">{value}</div>
       <div className="flex w-full gap-2">
         {INCREMENTS.map((inc) => (
           <Button

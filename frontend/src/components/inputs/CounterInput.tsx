@@ -66,7 +66,7 @@ export default function CounterInput(props: ConfigurableInputProps) {
       <Button variant="outline" onClick={() => handleChange(-(data.step || 1))}>
         <Minus />
       </Button>
-      <h2 className="px-4 text-2xl dark:text-white">{value}</h2>
+      <h2 className="px-4 text-2xl">{value}</h2>
       <Button variant="outline" onClick={() => handleChange(data.step || 1)}>
         <Plus />
       </Button>

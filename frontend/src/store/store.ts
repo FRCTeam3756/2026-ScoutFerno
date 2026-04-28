@@ -13,7 +13,7 @@ import { createStore } from "./createStore";
 
 export type { Result };
 
-export const STORE_VERSION = 1.9;
+export const STORE_VERSION = 2;
 
 function generateFieldValues(config: Config): { code: string; value: any }[] {
   const fieldValues: { code: string; value: any }[] = [];
@@ -74,6 +74,25 @@ export const useScoutFernoState = createStore<ScoutFernoState>(
   "scoutferno",
   {
     version: STORE_VERSION,
+    migrate: (persistedState) => {
+      const state = persistedState as Partial<ScoutFernoState>;
+
+      if (!state.formData) {
+        return { ...initialState, ...state };
+      }
+
+      const parsedConfig = configSchema.safeParse(state.formData);
+
+      if (!parsedConfig.success) {
+        return initialState;
+      }
+
+      return {
+        ...initialState,
+        ...state,
+        formData: parsedConfig.data,
+      } as ScoutFernoState;
+    },
   }
 );
 

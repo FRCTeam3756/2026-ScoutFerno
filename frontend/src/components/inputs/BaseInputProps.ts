@@ -229,10 +229,48 @@ export const colorSchemeSchema = z.object({
 
 export type ColorScheme = z.infer<typeof colorSchemeSchema>;
 
-export const themeSchema = z.object({
+const legacyThemeSchema = z.object({
   light: colorSchemeSchema,
   dark: colorSchemeSchema,
 });
+
+const defaultColorScheme: ColorScheme = {
+  background: "0 0% 3.9%",
+  foreground: "0 0% 98%",
+  card: "0 0% 3.9%",
+  card_foreground: "0 0% 98%",
+  popover: "0 0% 3.9%",
+  popover_foreground: "0 0% 98%",
+  primary: "354.44 71.3% 47.9%",
+  primary_foreground: "0 85.7% 97.3%",
+  secondary: "0 0% 14.9%",
+  secondary_foreground: "0 0% 98%",
+  muted: "0 0% 14.9%",
+  muted_foreground: "0 0% 63.9%",
+  accent: "0 0% 14.9%",
+  accent_foreground: "0 0% 98%",
+  destructive: "0 62.8% 30.6%",
+  destructive_foreground: "0 0% 98%",
+  border: "0 0% 14.9%",
+  input: "0 0% 14.9%",
+  ring: "354.44 71.3% 47.9%",
+  radius: "0.5rem",
+  chart_1: "220 70% 50%",
+  chart_2: "160 60% 45%",
+  chart_3: "30 80% 55%",
+  chart_4: "280 65% 60%",
+  chart_5: "340 75% 55%",
+};
+
+export const themeSchema = z.preprocess((value) => {
+  const legacyTheme = legacyThemeSchema.safeParse(value);
+
+  if (legacyTheme.success) {
+    return legacyTheme.data.dark;
+  }
+
+  return value;
+}, colorSchemeSchema);
 
 export type ScoutFernoTheme = z.infer<typeof themeSchema>;
 
@@ -269,62 +307,7 @@ export const configSchema = z.object({
     .describe(
       "Optional floating text box at the tob of the screen to show things like the team number. May be useful on small screens"
     ),
-  theme: themeSchema.default({
-    light: {
-      background: "0 0% 100%",
-      foreground: "0 0% 3.9%",
-      card: "0 0% 100%",
-      card_foreground: "0 0% 3.9%",
-      popover: "0 0% 100%",
-      popover_foreground: "0 0% 3.9%",
-      primary: "354.44 71.3% 47.9%",
-      primary_foreground: "0 85.7% 97.3%",
-      secondary: "0 0% 96.1%",
-      secondary_foreground: "0 0% 9%",
-      muted: "0 0% 96.1%",
-      muted_foreground: "0 0% 45.1%",
-      accent: "0 0% 96.1%",
-      accent_foreground: "0 0% 9%",
-      destructive: "0 84.2% 60.2%",
-      destructive_foreground: "0 0% 98%",
-      border: "0 0% 89.8%",
-      input: "0 0% 89.8%",
-      ring: "354.44 71.3% 47.9%",
-      radius: "0.5rem",
-      chart_1: "12 76% 61%",
-      chart_2: "173 58% 39%",
-      chart_3: "197 37% 24%",
-      chart_4: "43 74% 66%",
-      chart_5: "27 87% 67%",
-    },
-    dark: {
-      background: "0 0% 3.9%",
-      foreground: "0 0% 98%",
-      card: "0 0% 3.9%",
-      card_foreground: "0 0% 98%",
-      popover: "0 0% 3.9%",
-      popover_foreground: "0 0% 98%",
-      primary: "354.44 71.3% 47.9%",
-      primary_foreground: "0 85.7% 97.3%",
-      secondary: "0 0% 14.9%",
-      secondary_foreground: "0 0% 98%",
-      muted: "0 0% 14.9%",
-      muted_foreground: "0 0% 63.9%",
-      accent: "0 0% 14.9%",
-      accent_foreground: "0 0% 98%",
-      destructive: "0 62.8% 30.6%",
-      destructive_foreground: "0 0% 98%",
-      border: "0 0% 14.9%",
-      input: "0 0% 14.9%",
-      ring: "354.44 71.3% 47.9%",
-      radius: "0.5rem",
-      chart_1: "220 70% 50%",
-      chart_2: "160 60% 45%",
-      chart_3: "30 80% 55%",
-      chart_4: "280 65% 60%",
-      chart_5: "340 75% 55%",
-    },
-  }),
+  theme: themeSchema.default(defaultColorScheme),
   sections: z.array(sectionSchema),
 });
 
