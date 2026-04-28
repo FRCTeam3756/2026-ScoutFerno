@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../ui/button";
 import { UserRoundCheck } from "lucide-react";
-import { Modal } from "../../components/core/Modal";
+import { Modal } from "../core/Modal";
 import { pushDataToBackend } from "../../store/store";
 
 export type CommitButtonProps = {

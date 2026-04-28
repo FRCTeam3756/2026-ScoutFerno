@@ -23,6 +23,6 @@
 
     "baseUrl": "."
   },
-  "include": ["src"],
+  "include": ["frontend"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

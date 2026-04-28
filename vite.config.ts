@@ -4,11 +4,11 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  root: "frontend",
-  base: "/",
   plugins: [
     react(),
-    tsconfigPaths(),
+    tsconfigPaths({
+      projects: ["./tsconfig.json"],
+    }),
     VitePWA({
       registerType: "autoUpdate",
       manifest: false,
@@ -16,5 +16,5 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
       },
     }),
-  ]
+  ],
 });

@@ -1,6 +1,10 @@
-import { Button } from "../../components/ui/button";
+import { Button } from "../ui/button";
 import { useEvent } from "../../hooks";
-import { inputSelector, updateValue, useScoutFernoState } from "../../store/store";
+import {
+  inputSelector,
+  updateValue,
+  useScoutFernoState,
+} from "../../store/store";
 import { Minus, Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CounterInputData } from "./BaseInputProps";

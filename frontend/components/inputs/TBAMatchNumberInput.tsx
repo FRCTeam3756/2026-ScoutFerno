@@ -1,5 +1,9 @@
 import { useEvent } from "../../hooks";
-import { inputSelector, updateValue, useScoutFernoState } from "../../store/store";
+import {
+  inputSelector,
+  updateValue,
+  useScoutFernoState,
+} from "../../store/store";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { TBAMatchNumberInputData } from "./BaseInputProps";
 import { ConfigurableInputProps } from "./ConfigurableInput";
@@ -9,8 +13,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Input } from "../../components/ui/input";
+} from "../ui/select";
+import { Input } from "../ui/input";
 
 export default function TBAMatchNumberInput(props: ConfigurableInputProps) {
   const data = useScoutFernoState(
