@@ -66,11 +66,17 @@ export function Header() {
 
   return (
     <header className="w-full bg-zinc-900 border-b border-zinc-700 px-8 py-0 flex items-stretch">
-      <div className="flex items-center pr-8 border-r border-zinc-700 mr-6">
-        <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
-          Scout<span className="text-orange-400">Ferno</span>
-        </span>
-      </div>
+      <NavLink
+        key={""}
+        to={""}
+        className="flex items-center"
+      >
+        <div className="pr-8 border-r border-zinc-700 mr-6">
+          <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
+            Scout<span className="text-orange-400">Ferno</span>
+          </span>
+        </div>
+      </NavLink>
 
       <nav className="flex items-stretch gap-1 pt-2">
         {[
