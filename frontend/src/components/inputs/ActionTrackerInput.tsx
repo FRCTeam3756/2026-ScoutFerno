@@ -1,7 +1,11 @@
 import { Button } from "../../components/ui/button";
 import { useEvent } from "../../hooks";
-import { cn } from "../../lib/utils";
-import { inputSelector, updateValue, useScoutFernoState } from "../../store/store";
+import { cn } from "../../util/classNames";
+import {
+  inputSelector,
+  updateValue,
+  useScoutFernoState,
+} from "../../store/store";
 import { Play, Square, Undo2 } from "lucide-react";
 import {
   lazy,

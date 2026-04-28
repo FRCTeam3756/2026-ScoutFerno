@@ -8,7 +8,7 @@ import {
 import { Card } from "../ui/card";
 import { ImageInputData } from "./BaseInputProps";
 import { ConfigurableInputProps } from "./ConfigurableInput";
-import { cn } from "../../lib/utils";
+import { cn } from "../../util/classNames";
 import { Dialog, DialogContent, DialogClose } from "../ui/dialog";
 
 export default function ImageInput(props: ConfigurableInputProps) {
