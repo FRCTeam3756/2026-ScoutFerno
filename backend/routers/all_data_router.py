@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from ..crud.all_data_crud import read_all_data, read_all_data_by_match, read_all_data_by_team, read_all_data_by_team_match, create_all_data, delete_all_data_by_team, delete_all_data_by_team_match, delete_all_data_by_match, update_all_data
-from ..models.all_data_models import All_Data, All_Data_Create, All_Data_Interview, All_Data_Update
+from ..crud.all_data_crud import read_all_data, read_all_data_by_match, read_all_data_by_team, read_all_data_by_team_match, read_team_summaries, create_all_data, delete_all_data_by_team, delete_all_data_by_team_match, delete_all_data_by_match, update_all_data
+from ..models.all_data_models import All_Data, All_Data_Create, All_Data_Interview, All_Data_Update, Team_Summary
 from ..security.google_auth_guard import require_auth
 
 
@@ -11,6 +11,11 @@ router = APIRouter(prefix="/data", tags=["Data"], dependencies=[Depends(require_
 @router.get("/all_data/", response_model=All_Data_Interview)
 async def read_all_data_route():
     return await read_all_data()
+
+
+@router.get("/all_data/teams", response_model=list[Team_Summary])
+async def read_team_summaries_route():
+    return await read_team_summaries()
 
 
 @router.get("/all_data/team/{team_number}", response_model=All_Data_Interview)

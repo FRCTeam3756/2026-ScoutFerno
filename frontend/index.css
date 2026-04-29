@@ -21,6 +21,16 @@ body {
   font-style: normal;
 }
 
+@layer utilities {
+  .font-sports {
+    font-family: 'SF Sports Night', sans-serif;
+  }
+
+  .font-sports-ns {
+    font-family: 'SF Sports Night NS', sans-serif;
+  }
+}
+
 @layer base {
   @layer base {
     :root {

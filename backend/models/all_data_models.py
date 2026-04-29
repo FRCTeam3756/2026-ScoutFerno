@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from .prematch_data_models import Prematch_Data, Prematch_Data_Create, Prematch_Data_Update
 from .autonomous_data_models import Autonomous_Data, Autonomous_Data_Create, Autonomous_Data_Update
 from .teleop_data_models import Teleop_Data, Teleop_Data_Create, Teleop_Data_Update
@@ -52,3 +52,11 @@ class All_Data_Interview_Delete(BaseModel):
     endgame: list[Endgame_Data]
     postmatch: list[Postmatch_Data]
     interview: list[Interview_Data]
+
+
+class Team_Summary(BaseModel):
+    team_number: int
+    name: str | None = None
+    competitions: list[str] = Field(default_factory=list)
+    match_count: int = 0
+    interview_count: int = 0

@@ -6,6 +6,7 @@ import { Footer } from "./components/Footer";
 import { Helmet } from "react-helmet";
 import { Home } from "./pages/Home";
 import { AuthProvider, useAuth } from "./components/AuthProvider";
+import { Strategy } from "./pages/Strategy";
 
 function ProtectedRoute() {
   const { user, isLoading } = useAuth();
@@ -42,6 +43,7 @@ export const App = () => (
             <Route path="/" element={<Home />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/scouting" element={<Scouting />} />
+              <Route path="/strategy" element={<Strategy />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

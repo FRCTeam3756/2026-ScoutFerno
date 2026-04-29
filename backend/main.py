@@ -5,7 +5,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 import uvicorn
 
 from .models.fastapi_models import team_lifespan
-from .routers import all_data_router, prematch_data_router, autonomous_data_router, teleop_data_router, endgame_data_router, postmatch_data_router, security_router, video_router, interview_data_router#, teams_data_router
+from .routers import all_data_router, prematch_data_router, autonomous_data_router, teleop_data_router, endgame_data_router, postmatch_data_router, security_router, video_router, interview_data_router
 from .security.google_auth import (
     SESSION_COOKIE_NAME,
     get_cors_origins,
@@ -46,7 +46,6 @@ app.include_router(postmatch_data_router.router)
 app.include_router(interview_data_router.router)
 app.include_router(security_router.router)
 app.include_router(video_router.router)
-# app.include_router(teams_data_router.router)
 
 
 @app.get("/health")
