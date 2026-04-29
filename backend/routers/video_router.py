@@ -2,10 +2,12 @@ import os
 from base64 import b64encode
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/videos", tags=["videos"])
+from ..security.google_auth_guard import require_auth
+
+router = APIRouter(prefix="/videos", tags=["videos"], dependencies=[Depends(require_auth)])
 
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 CLOUDFLARE_STREAM_TOKEN = os.getenv("CLOUDFLARE_STREAM_TOKEN")

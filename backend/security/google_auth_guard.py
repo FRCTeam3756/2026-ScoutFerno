@@ -1,32 +1,23 @@
-from fastapi import HTTPException
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-import json
+from fastapi import HTTPException, Request
 
-from .google_auth import TOKEN_PATH, SCOPES
+from ..models.auth_models import AuthenticatedUser
+from .google_auth import SESSION_USER_KEY
 
 
+def get_current_user(request: Request) -> AuthenticatedUser | None:
+    user_data = request.session.get(SESSION_USER_KEY)
+    if not user_data:
+        return None
 
-def require_auth() -> Credentials:
-    if not TOKEN_PATH.exists():
-        raise HTTPException(status_code=401, detail="Not logged in")
-    
     try:
-        creds = Credentials.from_authorized_user_info(  # type: ignore
-            info=json.loads(TOKEN_PATH.read_text()),
-            scopes=SCOPES,
-        )
-    except ValueError as e:
-        raise HTTPException(status_code=401, detail="Invalid token, please login again")
-    
-    if not creds.valid:
-        if creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-                TOKEN_PATH.write_text(creds.to_json())  # persist refreshed token
-            except Exception:
-                raise HTTPException(status_code=401, detail="Token refresh failed, please login again")
-        else:
-            raise HTTPException(status_code=401, detail="Token expired, please login again")
+        return AuthenticatedUser.model_validate(user_data)
+    except Exception:
+        request.session.pop(SESSION_USER_KEY, None)
+        return None
 
-    return creds
+
+def require_auth(request: Request) -> AuthenticatedUser:
+    user = get_current_user(request)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication required.")
+    return user

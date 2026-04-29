@@ -1,49 +1,139 @@
-import json
-from pathlib import Path
-from typing import Optional
+import os
 
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
+from fastapi import HTTPException
+from google.auth.transport.requests import Request as GoogleRequest
+from google.oauth2 import id_token
 
-################################################################
+from ..models.auth_models import AuthenticatedUser
 
-TOKEN_PATH = Path("src/security/token.json")
-CREDENTIALS_PATH = Path("src/security/oauth_credentials.json")
-SCOPES: Optional[list[str]] = ["https://www.googleapis.com/auth/spreadsheets"]
+SESSION_COOKIE_NAME = "scoutferno_session"
+SESSION_USER_KEY = "user"
+
+def _csv_env(name: str) -> list[str]:
+    raw = os.getenv(name, "")
+    return [value.strip() for value in raw.split(",") if value.strip()]
 
 
-def authenticate_google() -> Credentials:
-    creds = None
-    
-    if TOKEN_PATH.exists():
-        try:
-            creds = Credentials.from_authorized_user_info(
-                info=json.loads(TOKEN_PATH.read_text()),
-                scopes=SCOPES,
-            )
-        except (FileNotFoundError, json.JSONDecodeError, ValueError):
-            creds = None
+def normalize_origin(origin: str) -> str:
+    if origin.startswith(("http://", "https://")):
+        return origin
+    return f"https://{origin}"
 
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-            except Exception:
-                creds = None
-        
-        if not creds:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                str(CREDENTIALS_PATH),
-                scopes=SCOPES,
-            )
-            creds = flow.run_local_server(port=0)
 
-        if creds:
-            TOKEN_PATH.write_text(creds.to_json())
-    
-    return creds
+def get_cors_origins() -> list[str]:
+    default_origins = [
+        "https://scouting.ramferno.com",
+        "https://api.ramferno.com",
+        "http://localhost:5173",
+        "476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com",
+        "bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com",
+        "7e6fdead-4433-4b0b-ac31-45524d5ba102.cfargotunnel.com",
+    ]
 
-if __name__ == "__main__":
-    creds = authenticate_google()
-    print(creds)
+    configured_origins = [normalize_origin(origin) for origin in _csv_env("CORS_ALLOW_ORIGINS")]
+    combined_origins = [normalize_origin(origin) for origin in default_origins] + configured_origins
+
+    return list(dict.fromkeys(combined_origins))
+
+
+def get_session_secret() -> str:
+    return os.getenv("SESSION_SECRET", "dev-only-change-me")
+
+
+def get_session_cookie_secure() -> bool:
+    return os.getenv("AUTH_COOKIE_SECURE", "false").lower() == "true"
+
+
+def get_session_cookie_domain() -> str | None:
+    return os.getenv("AUTH_COOKIE_DOMAIN", None)
+
+
+def get_session_max_age_seconds() -> int:
+    try:
+        return int(os.getenv("AUTH_SESSION_MAX_AGE_SECONDS", "43200"))
+    except ValueError:
+        return 43200
+
+
+def get_google_client_ids() -> list[str]:
+    client_ids = _csv_env("GOOGLE_CLIENT_IDS")
+    single_client_id = os.getenv("GOOGLE_CLIENT_ID")
+
+    if single_client_id and single_client_id not in client_ids:
+        client_ids.insert(0, single_client_id)
+
+    return client_ids
+
+
+def _authorized_emails() -> set[str]:
+    return {email.lower() for email in _csv_env("AUTHORIZED_GOOGLE_EMAILS")}
+
+
+def _authorized_domains() -> set[str]:
+    return {
+        domain.lower().lstrip("@")
+        for domain in _csv_env("AUTHORIZED_GOOGLE_DOMAINS")
+    }
+
+
+def _ensure_google_client_ids_configured() -> list[str]:
+    client_ids = get_google_client_ids()
+    if not client_ids:
+        raise HTTPException(
+            status_code=500,
+            detail="Google OAuth is not configured. Set GOOGLE_CLIENT_ID or GOOGLE_CLIENT_IDS.",
+        )
+    return client_ids
+
+
+def _ensure_authorized_email(email: str) -> None:
+    emails = _authorized_emails()
+    domains = _authorized_domains()
+
+    if not emails and not domains:
+        return
+
+    normalized_email = email.lower()
+    email_domain = normalized_email.split("@")[-1]
+
+    if normalized_email in emails or email_domain in domains:
+        return
+
+    raise HTTPException(status_code=403, detail="This Google account is not authorized.")
+
+
+def verify_google_credential(credential: str) -> AuthenticatedUser:
+    allowed_client_ids = _ensure_google_client_ids_configured()
+
+    try:
+        payload = id_token.verify_oauth2_token(
+            credential,
+            GoogleRequest(),
+            audience=None,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=401, detail="Invalid Google credential.") from exc
+
+    audience = payload.get("aud")
+    issuer = payload.get("iss")
+    email = payload.get("email")
+    email_verified = payload.get("email_verified")
+
+    if audience not in allowed_client_ids:
+        raise HTTPException(status_code=401, detail="Google credential audience is not allowed.")
+
+    if issuer not in {"accounts.google.com", "https://accounts.google.com"}:
+        raise HTTPException(status_code=401, detail="Google credential issuer is invalid.")
+
+    if not email or not email_verified:
+        raise HTTPException(status_code=401, detail="Google account email is not verified.")
+
+    _ensure_authorized_email(email)
+
+    return AuthenticatedUser(
+        email=email,
+        name=payload.get("name") or email,
+        picture=payload.get("picture"),
+        given_name=payload.get("given_name"),
+        family_name=payload.get("family_name"),
+    )

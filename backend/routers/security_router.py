@@ -1,50 +1,33 @@
-from fastapi import APIRouter, HTTPException
-import googleapiclient.discovery as discovery # type: ignore
-import json
-from google.oauth2.credentials import Credentials
-from typing import Any, cast
+from fastapi import APIRouter, Request, Response
 
-from ..security.google_auth import authenticate_google, TOKEN_PATH, SCOPES
+from ..models.auth_models import AuthSessionResponse, GoogleAuthRequest
+from ..security.google_auth import SESSION_COOKIE_NAME, SESSION_USER_KEY, verify_google_credential
+from ..security.google_auth_guard import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.get("/login")
-def login() -> dict[str, str | None]:
-    try:
-        creds = authenticate_google()
-        if not creds:
-            raise HTTPException(status_code=401, detail="Failed to authenticate")
-        service = cast(Any, discovery.build("oauth2", "v2", credentials=creds))  # type: ignore
-        user_info = cast(dict[str, Any], service.userinfo().get().execute())
-        return {
-            "name": user_info.get("name"),
-            "email": user_info.get("email"),
-            "picture": user_info.get("picture")
-        }
-    except FileNotFoundError:
-        raise HTTPException(status_code=401, detail="Token file not found, please try again")
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=str(e))
+@router.post("/google", response_model=AuthSessionResponse)
+def login_with_google(payload: GoogleAuthRequest, request: Request) -> AuthSessionResponse:
+    user = verify_google_credential(payload.credential)
+    request.session[SESSION_USER_KEY] = user.model_dump(mode="json")
+    return AuthSessionResponse(authenticated=True, user=user)
 
 
-@router.get("/status")
-def auth_status() -> dict[str, bool]:
-    if not TOKEN_PATH.exists():
-        return {"authenticated": False}
-    try:
-        creds = Credentials.from_authorized_user_info(  # type: ignore
-            info=cast(dict[str, Any], json.loads(TOKEN_PATH.read_text())),
-            scopes=SCOPES,
-        )
-        
-        return {"authenticated": creds.valid, "expired": creds.expired}
-    except Exception:
-        return {"authenticated": False}
+@router.get("/session", response_model=AuthSessionResponse)
+def read_auth_session(request: Request) -> AuthSessionResponse:
+    user = get_current_user(request)
+    return AuthSessionResponse(authenticated=user is not None, user=user)
 
 
-@router.get("/logout")
-def logout():
-    if TOKEN_PATH.exists():
-        TOKEN_PATH.unlink()
-        return {"message": "Logged out successfully"}
+@router.get("/status", response_model=AuthSessionResponse)
+def auth_status(request: Request) -> AuthSessionResponse:
+    user = get_current_user(request)
+    return AuthSessionResponse(authenticated=user is not None, user=user)
+
+
+@router.post("/logout", response_model=AuthSessionResponse)
+def logout(request: Request, response: Response) -> AuthSessionResponse:
+    request.session.clear()
+    response.delete_cookie(SESSION_COOKIE_NAME)
+    return AuthSessionResponse(authenticated=False, user=None)

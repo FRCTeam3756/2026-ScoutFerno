@@ -1,6 +1,19 @@
 import { NavLink } from "react-router-dom";
 import { STORE_VERSION } from "../store/store";
 import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
+
+import { useAuth } from "./AuthProvider";
+import { GoogleSignInButton } from "./GoogleSignInButton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { buildApiUrl } from "../util/api";
 
 type ConnectionStatus = "checking" | "connected" | "disconnected";
 
@@ -15,9 +28,11 @@ function useBackendHealth(url: string, baseIntervalMs = 10000) {
 
   useEffect(() => {
     let cancelled = false;
-    let interval = baseIntervalMs;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const check = async () => {
+      let nextInterval = baseIntervalMs;
+
       try {
         const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
 
@@ -25,20 +40,29 @@ function useBackendHealth(url: string, baseIntervalMs = 10000) {
 
         if (res.ok) {
           setStatus("connected");
-          interval = baseIntervalMs;
         } else {
           setStatus("disconnected");
-          interval = Math.min(interval * 2, 60000);
+          nextInterval = Math.min(baseIntervalMs * 2, 60000);
         }
       } catch {
-        if (!cancelled) setStatus("disconnected");
+        if (!cancelled) {
+          setStatus("disconnected");
+          nextInterval = Math.min(baseIntervalMs * 2, 60000);
+        }
+      } finally {
+        if (!cancelled) {
+          timeoutId = setTimeout(check, nextInterval);
+        }
       }
     };
 
-    check();
+    void check();
 
     return () => {
       cancelled = true;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [url, baseIntervalMs]);
 
@@ -67,52 +91,146 @@ const statusConfig: Record<
 };
 
 export function Header() {
-  const status = useBackendHealth("https://api.ramferno.com/health");
+  const status = useBackendHealth(buildApiUrl("/api/health"));
   const { label, dot, text } = statusConfig[status];
+  const {
+    user,
+    error,
+    clearError,
+    isLoading,
+    isAuthenticating,
+    signInWithGoogleCredential,
+    signOut,
+  } = useAuth();
+
+  const userInitial =
+    user?.name
+      ?.split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "?";
 
   return (
-    <header className="w-full bg-zinc-900 border-b border-zinc-700 px-8 py-0 flex items-center">
-      <NavLink key={""} to={""} className="flex items-center">
-        <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
-          Scout<span className="text-orange-400">Ferno</span>
-        </span>
-      </NavLink>
-
-      <div className="mx-6 w-px h-4 bg-zinc-700 self-center" />
-
-      <nav className="flex items-stretch gap-1 pt-1 pb-1">
-        {NAV_ITEMS.map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              [
-                "relative flex items-center px-4 text-sm font-medium tracking-wide transition-colors duration-150",
-                "border-b-2",
-                isActive
-                  ? "text-white border-orange-400"
-                  : "text-zinc-400 border-transparent hover:text-zinc-100 hover:border-zinc-500",
-              ].join(" ")
-            }
-          >
-            {label}
+    <header className="w-full border-b border-zinc-700 bg-zinc-900 px-4 py-3 md:px-8">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="flex items-center gap-6">
+          <NavLink key={""} to={""} className="flex items-center">
+            <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
+              Scout<span className="text-orange-400">Ferno</span>
+            </span>
           </NavLink>
-        ))}
-      </nav>
 
-      <div className="ml-auto flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className={`inline-block w-2 h-2 rounded-full ${dot}`} />
-          <span className={`font-mono text-xs tracking-wider ${text}`}>
-            {label}
-          </span>
+          <div className="hidden h-4 w-px self-center bg-zinc-700 md:block" />
+
+          <nav className="flex items-stretch gap-1 pt-1 pb-1">
+            {NAV_ITEMS.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  [
+                    "relative flex items-center px-3 md:px-4 text-sm font-medium tracking-wide transition-colors duration-150",
+                    "border-b-2",
+                    isActive
+                      ? "text-white border-orange-400"
+                      : "text-zinc-400 border-transparent hover:text-zinc-100 hover:border-zinc-500",
+                  ].join(" ")
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
         </div>
 
-        <div className="w-px h-4 bg-zinc-700" />
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-3">
+          {error ? (
+            <button
+              type="button"
+              onClick={clearError}
+              className="rounded border border-amber-700/70 bg-amber-950/60 px-2 py-1 text-left font-mono text-[11px] text-amber-200"
+              title={error}
+            >
+              Auth issue
+            </button>
+          ) : null}
 
-        <span className="text-zinc-500 font-mono text-xs tracking-wider border border-zinc-700 rounded px-2 py-0.5">
-          v{STORE_VERSION}
-        </span>
+          {!isLoading && !user ? (
+            <GoogleSignInButton
+              disabled={isAuthenticating}
+              onCredential={signInWithGoogleCredential}
+            />
+          ) : null}
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="flex items-center gap-3 rounded-full border border-zinc-700 bg-zinc-950/70 px-2 py-1 pr-3 text-left transition-colors hover:border-zinc-500"
+                >
+                  {user.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      className="h-9 w-9 rounded-full border border-zinc-700 object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-100">
+                      {userInitial}
+                    </span>
+                  )}
+                  <span className="hidden sm:flex sm:flex-col">
+                    <span className="text-sm font-medium text-zinc-100">
+                      {user.name}
+                    </span>
+                    <span className="font-mono text-[11px] text-zinc-400">
+                      {user.email}
+                    </span>
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-72 border-zinc-700 bg-zinc-900 text-zinc-100"
+              >
+                <DropdownMenuLabel className="space-y-1">
+                  <div className="text-sm font-semibold text-zinc-100">
+                    {user.name}
+                  </div>
+                  <div className="font-mono text-xs text-zinc-400">
+                    {user.email}
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-zinc-700" />
+                <DropdownMenuItem
+                  onSelect={() => {
+                    void signOut();
+                  }}
+                  className="cursor-pointer text-zinc-100 focus:bg-zinc-800 focus:text-zinc-100"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+
+          <div className="flex items-center gap-2">
+            <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+            <span className={`font-mono text-xs tracking-wider ${text}`}>
+              {label}
+            </span>
+          </div>
+
+          <div className="hidden h-4 w-px bg-zinc-700 md:block" />
+
+          <span className="rounded border border-zinc-700 px-2 py-0.5 font-mono text-xs tracking-wider text-zinc-500">
+            v{STORE_VERSION}
+          </span>
+        </div>
       </div>
     </header>
   );

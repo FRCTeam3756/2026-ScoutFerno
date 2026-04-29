@@ -9,6 +9,7 @@ import {
 } from "../components/inputs/BaseInputProps";
 import { MatchData } from "../types/matchData";
 import { Result } from "../types/result";
+import { apiFetch } from "../util/api";
 import { createStore } from "./createStore";
 
 export type { Result };
@@ -178,21 +179,22 @@ export async function pushDataToBackend(): Promise<Result<void>> {
   };
 
   try {
-    const response = await fetch(
-      "https://api.ramferno.com/api/data/all_data/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await apiFetch("/api/data/all_data/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
     if (!response.ok) {
       const errorDetail = await response.json();
-      console.error("422 detail:", JSON.stringify(errorDetail, null, 2));
-      return { success: false, error: new Error(JSON.stringify(errorDetail)) };
+      const message =
+        typeof errorDetail?.detail === "string"
+          ? errorDetail.detail
+          : JSON.stringify(errorDetail);
+      console.error("Backend error:", JSON.stringify(errorDetail, null, 2));
+      return { success: false, error: new Error(message) };
     }
 
     return { success: true, data: undefined };
