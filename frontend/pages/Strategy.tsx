@@ -125,7 +125,9 @@ function formatValue(value: unknown) {
 }
 
 function average(values: Array<number | null | undefined>) {
-  const valid = values.filter((value): value is number => typeof value === "number");
+  const valid = values.filter(
+    (value): value is number => typeof value === "number"
+  );
 
   if (!valid.length) {
     return null;
@@ -143,7 +145,11 @@ function percent(part: number, total: number) {
 }
 
 function uniqueNonEmpty(values: Array<string | null | undefined>) {
-  return [...new Set(values.filter((value): value is string => Boolean(value && value.trim())))];
+  return [
+    ...new Set(
+      values.filter((value): value is string => Boolean(value && value.trim()))
+    ),
+  ];
 }
 
 function buildMatchBundles(teamData: TeamAllData) {
@@ -207,10 +213,16 @@ function ProfileMetric({
         borderColor: `${theme.primary}50`,
       }}
     >
-      <div className="text-xs uppercase tracking-[0.28em]" style={{ color: theme.mutedText }}>
+      <div
+        className="text-xs uppercase tracking-[0.28em]"
+        style={{ color: theme.mutedText }}
+      >
         {label}
       </div>
-      <div className="mt-2 text-3xl font-semibold tracking-tight" style={{ color: theme.text }}>
+      <div
+        className="mt-2 text-3xl font-semibold tracking-tight"
+        style={{ color: theme.text }}
+      >
         {value}
       </div>
       <div className="mt-1 text-sm" style={{ color: theme.accentStrong }}>
@@ -240,7 +252,10 @@ function KeyValueGrid<T extends object>({
             borderColor: `${theme.primary}35`,
           }}
         >
-          <dt className="text-[11px] uppercase tracking-[0.24em]" style={{ color: theme.mutedText }}>
+          <dt
+            className="text-[11px] uppercase tracking-[0.24em]"
+            style={{ color: theme.mutedText }}
+          >
             {field.label}
           </dt>
           <dd className="mt-2 text-sm leading-6" style={{ color: theme.text }}>
@@ -268,11 +283,20 @@ function MatchSection<T extends object>({
   return (
     <section className="space-y-3">
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1" style={{ backgroundColor: `${theme.primary}50` }} />
-        <h4 className="font-sports-ns text-lg uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+        <div
+          className="h-px flex-1"
+          style={{ backgroundColor: `${theme.primary}50` }}
+        />
+        <h4
+          className="font-sports-ns text-lg uppercase tracking-[0.18em]"
+          style={{ color: theme.accent }}
+        >
           {title}
         </h4>
-        <div className="h-px flex-1" style={{ backgroundColor: `${theme.primary}50` }} />
+        <div
+          className="h-px flex-1"
+          style={{ backgroundColor: `${theme.primary}50` }}
+        />
       </div>
 
       {data ? (
@@ -322,7 +346,9 @@ export function Strategy() {
         }
 
         setDirectoryError(
-          error instanceof Error ? error.message : "Unable to load the team directory."
+          error instanceof Error
+            ? error.message
+            : "Unable to load the team directory."
         );
       })
       .finally(() => {
@@ -394,8 +420,7 @@ export function Strategy() {
           competition.toLowerCase().includes(normalizedQuery)
         )
       );
-    })
-    .slice(0, deferredQuery.trim() ? 10 : 12);
+    });
 
   const selectedSummary = teamSummaries.find(
     (team) => team.team_number === selectedTeamNumber
@@ -431,9 +456,15 @@ export function Strategy() {
     : [];
   const interviewTags = teamData
     ? [
-        ...uniqueNonEmpty(teamData.interview.map((record) => record.drivetrain_type)),
-        ...uniqueNonEmpty(teamData.interview.map((record) => record.shooter_type)),
-        ...uniqueNonEmpty(teamData.interview.map((record) => record.climb_level)),
+        ...uniqueNonEmpty(
+          teamData.interview.map((record) => record.drivetrain_type)
+        ),
+        ...uniqueNonEmpty(
+          teamData.interview.map((record) => record.shooter_type)
+        ),
+        ...uniqueNonEmpty(
+          teamData.interview.map((record) => record.climb_level)
+        ),
       ].slice(0, 6)
     : [];
   const competitionList = selectedSummary?.competitions.length
@@ -478,112 +509,121 @@ export function Strategy() {
       (team) => team.team_number === parsed
     );
 
-    selectTeam(parsed, matchingSummary ? formatTeamLabel(matchingSummary) : `${parsed}`);
+    selectTeam(
+      parsed,
+      matchingSummary ? formatTeamLabel(matchingSummary) : `${parsed}`
+    );
   };
 
   return (
     <main className="px-4 py-6 md:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 xl:grid xl:grid-cols-[340px_minmax(0,1fr)]">
         <aside className="space-y-5">
-          <section className="rounded-[28px] border border-zinc-800 bg-zinc-950/80 p-5">
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-zinc-400" />
-              <h2 className="font-sports-ns text-xl uppercase tracking-[0.2em] text-zinc-100">
-                Team Lookup
-              </h2>
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <Input
-                type="text"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    onLookup();
-                  }
-                }}
-                placeholder="Enter team number"
-                className="h-11 rounded-xl border border-zinc-800 bg-zinc-900 px-4 text-zinc-50 placeholder:text-zinc-500"
-              />
-              <Button
-                type="button"
-                onClick={onLookup}
-                className="h-11 rounded-xl px-4"
-              >
-                Load
-              </Button>
-            </div>
-
-            {directoryError ? (
-              <div className="mt-4 rounded-xl border border-red-950 bg-red-950/40 px-4 py-3 text-sm text-red-100">
-                {directoryError}
-              </div>
-            ) : null}
-
-            <div className="mt-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs uppercase tracking-[0.28em] text-zinc-500">
-                  Available Teams
-                </h3>
-                {selectedTeamNumber !== null ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setQuery("");
-                      startTransition(() => setSearchParams({}));
-                    }}
-                    className="text-xs uppercase tracking-[0.24em] text-zinc-500 transition-colors hover:text-zinc-200"
-                  >
-                    Clear
-                  </button>
-                ) : null}
+          <div className="space-y-2 pr-1">
+            <section className="rounded-[28px] border border-zinc-800 bg-zinc-950/80 p-5">
+              <div className="flex items-center gap-2">
+                <Search className="h-4 w-4 text-zinc-400" />
+                <h2 className="font-sports-ns text-xl uppercase tracking-[0.2em] text-zinc-100">
+                  Team Lookup
+                </h2>
               </div>
 
-              <div className="max-h-[28rem] space-y-2 overflow-y-auto pr-1">
-                {filteredTeams.map((team) => {
-                  const isSelected = team.team_number === selectedTeamNumber;
+              <div className="mt-4 flex gap-2 scrollbar">
+                <Input
+                  type="text"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      onLookup();
+                    }
+                  }}
+                  placeholder="Enter team number"
+                  className="h-11 rounded-xl border border-zinc-800 bg-zinc-900 px-4 text-zinc-50 placeholder:text-zinc-500"
+                />
+                <Button
+                  type="button"
+                  onClick={onLookup}
+                  className="h-11 rounded-xl px-4"
+                >
+                  Load
+                </Button>
+              </div>
 
-                  return (
+              {directoryError ? (
+                <div className="mt-4 rounded-xl border border-red-950 bg-red-950/40 px-4 py-3 text-sm text-red-100">
+                  {directoryError}
+                </div>
+              ) : null}
+
+              <div className="mt-5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs uppercase tracking-[0.28em] text-zinc-500">
+                    Available Teams
+                  </h3>
+                  {selectedTeamNumber !== null ? (
                     <button
-                      key={team.team_number}
                       type="button"
-                      onClick={() => selectTeam(team.team_number, formatTeamLabel(team))}
-                      className="w-full rounded-2xl border px-4 py-3 text-left transition-all duration-150"
-                      style={{
-                        borderColor: isSelected ? theme.primary : "#27272a",
-                        backgroundColor: isSelected ? `${theme.primary}18` : "#09090b",
+                      onClick={() => {
+                        setQuery("");
+                        startTransition(() => setSearchParams({}));
                       }}
+                      className="text-xs uppercase tracking-[0.24em] text-zinc-500 transition-colors hover:text-zinc-200"
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="font-semibold text-zinc-100">
-                            {formatTeamLabel(team)}
-                          </div>
-                          <div className="mt-1 text-xs uppercase tracking-[0.2em] text-zinc-500">
-                            {team.competitions.length
-                              ? team.competitions.join(" • ")
-                              : "No competition tag"}
-                          </div>
-                        </div>
-                        <div className="text-right text-xs text-zinc-400">
-                          <div>{team.match_count} matches</div>
-                          <div>{team.interview_count} interviews</div>
-                        </div>
-                      </div>
+                      Clear
                     </button>
-                  );
-                })}
+                  ) : null}
+                </div>
 
-                {!directoryLoading && !filteredTeams.length ? (
-                  <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-6 text-sm text-zinc-500">
-                    No teams matched that search yet.
-                  </div>
-                ) : null}
+                <div className="max-h-[28rem] space-y-2 overflow-y-auto pr-1">
+                  {filteredTeams.map((team) => {
+                    const isSelected = team.team_number === selectedTeamNumber;
+
+                    return (
+                      <button
+                        key={team.team_number}
+                        type="button"
+                        onClick={() =>
+                          selectTeam(team.team_number, formatTeamLabel(team))
+                        }
+                        className="w-full rounded-2xl border px-4 py-3 text-left transition-all duration-150"
+                        style={{
+                          borderColor: isSelected ? theme.primary : "#27272a",
+                          backgroundColor: isSelected
+                            ? `${theme.primary}18`
+                            : "#09090b",
+                        }}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="font-semibold text-zinc-100">
+                              {formatTeamLabel(team)}
+                            </div>
+                            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-zinc-500">
+                              {team.competitions.length
+                                ? team.competitions.join(" • ")
+                                : "No competition tag"}
+                            </div>
+                          </div>
+                          <div className="text-right text-xs text-zinc-400">
+                            <div>{team.match_count} matches</div>
+                            <div>{team.interview_count} interviews</div>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+
+                  {!directoryLoading && !filteredTeams.length ? (
+                    <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-6 text-sm text-zinc-500">
+                      No teams matched that search yet.
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </aside>
 
         <section className="min-w-0">
@@ -621,7 +661,10 @@ export function Strategy() {
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-3">
                       <div>
-                        <h2 className="font-sports text-5xl uppercase leading-none tracking-[0.12em]" style={{ color: theme.text }}>
+                        <h2
+                          className="font-sports text-5xl uppercase leading-none tracking-[0.12em]"
+                          style={{ color: theme.text }}
+                        >
                           Team {selectedTeamNumber}
                         </h2>
                       </div>
@@ -665,12 +708,24 @@ export function Strategy() {
                         backgroundColor: "rgba(255,255,255,0.06)",
                       }}
                     >
-                      <div className="flex items-center gap-2 text-sm" style={{ color: theme.accent }}>
+                      <div
+                        className="flex items-center gap-2 text-sm"
+                        style={{ color: theme.accent }}
+                      >
                         Strategist Summary
                       </div>
-                      <p className="mt-3 text-sm leading-7" style={{ color: theme.text }}>
+                      <p
+                        className="mt-3 text-sm leading-7"
+                        style={{ color: theme.text }}
+                      >
                         {hasTeamData
-                          ? `Coverage spans ${matchBundles.length} matches with ${comments.length} written notes and ${teamData?.interview.length || 0} interview entries.`
+                          ? `Coverage spans ${
+                              matchBundles.length
+                            } matches with ${
+                              comments.length
+                            } written notes and ${
+                              teamData?.interview.length || 0
+                            } interview entries.`
                           : "No scouting entries recorded yet for this team."}
                       </p>
                     </div>
@@ -685,13 +740,17 @@ export function Strategy() {
                     />
                     <ProfileMetric
                       label="Auto Avg"
-                      value={averageAuto === null ? "—" : averageAuto.toFixed(1)}
+                      value={
+                        averageAuto === null ? "—" : averageAuto.toFixed(1)
+                      }
                       caption="Average auto score"
                       theme={theme}
                     />
                     <ProfileMetric
                       label="Teleop Avg"
-                      value={averageTeleop === null ? "—" : averageTeleop.toFixed(1)}
+                      value={
+                        averageTeleop === null ? "—" : averageTeleop.toFixed(1)
+                      }
                       caption="Average teleop score"
                       theme={theme}
                     />
@@ -715,7 +774,10 @@ export function Strategy() {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="font-sports-ns text-2xl uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+                      <h3
+                        className="font-sports-ns text-2xl uppercase tracking-[0.18em]"
+                        style={{ color: theme.accent }}
+                      >
                         Performance Snapshot
                       </h3>
                     </div>
@@ -724,21 +786,37 @@ export function Strategy() {
                   <div className="mt-5 grid gap-4 md:grid-cols-2">
                     <div
                       className="rounded-2xl border p-4"
-                      style={{ borderColor: `${theme.primary}35`, backgroundColor: theme.surfaceAlt }}
+                      style={{
+                        borderColor: `${theme.primary}35`,
+                        backgroundColor: theme.surfaceAlt,
+                      }}
                     >
-                      <div className="flex items-center gap-2 text-sm" style={{ color: theme.accent }}>
+                      <div
+                        className="flex items-center gap-2 text-sm"
+                        style={{ color: theme.accent }}
+                      >
                         Scoring Profile
                       </div>
-                      <div className="mt-4 space-y-3 text-sm leading-6" style={{ color: theme.text }}>
+                      <div
+                        className="mt-4 space-y-3 text-sm leading-6"
+                        style={{ color: theme.text }}
+                      >
                         <div className="flex items-center justify-between gap-4">
                           <span>Subjective Score</span>
-                          <strong>{averageEfficiency === null ? "—" : averageEfficiency.toFixed(1)} / 5</strong>
+                          <strong>
+                            {averageEfficiency === null
+                              ? "—"
+                              : averageEfficiency.toFixed(1)}{" "}
+                            / 5
+                          </strong>
                         </div>
                         <div className="flex items-center justify-between gap-4">
                           <span>Defence Played Count</span>
                           <strong>
                             {teamData
-                              ? teamData.postmatch.filter((record) => (record.defense_skill || 0) > 0).length
+                              ? teamData.postmatch.filter(
+                                  (record) => (record.defense_skill || 0) > 0
+                                ).length
                               : 0}
                           </strong>
                         </div>
@@ -747,7 +825,11 @@ export function Strategy() {
                           <strong>
                             {teamData
                               ? (() => {
-                                  const avg = average(teamData.teleop.map((record) => record.fuel_fed_passed));
+                                  const avg = average(
+                                    teamData.teleop.map(
+                                      (record) => record.fuel_fed_passed
+                                    )
+                                  );
                                   return avg === null ? "—" : avg.toFixed(1);
                                 })()
                               : "—"}
@@ -758,17 +840,28 @@ export function Strategy() {
 
                     <div
                       className="rounded-2xl border p-4"
-                      style={{ borderColor: `${theme.primary}35`, backgroundColor: theme.surfaceAlt }}
+                      style={{
+                        borderColor: `${theme.primary}35`,
+                        backgroundColor: theme.surfaceAlt,
+                      }}
                     >
-                      <div className="flex items-center gap-2 text-sm" style={{ color: theme.accent }}>
+                      <div
+                        className="flex items-center gap-2 text-sm"
+                        style={{ color: theme.accent }}
+                      >
                         Reliability
                       </div>
-                      <div className="mt-4 space-y-3 text-sm leading-6" style={{ color: theme.text }}>
+                      <div
+                        className="mt-4 space-y-3 text-sm leading-6"
+                        style={{ color: theme.text }}
+                      >
                         <div className="flex items-center justify-between gap-4">
                           <span>No-show reports</span>
                           <strong>
                             {teamData
-                              ? teamData.prematch.filter((record) => record.no_show).length
+                              ? teamData.prematch.filter(
+                                  (record) => record.no_show
+                                ).length
                               : 0}
                           </strong>
                         </div>
@@ -776,7 +869,9 @@ export function Strategy() {
                           <span>Mechanical issues</span>
                           <strong>
                             {teamData
-                              ? teamData.endgame.filter((record) => record.mechanical_issue).length
+                              ? teamData.endgame.filter(
+                                  (record) => record.mechanical_issue
+                                ).length
                               : 0}
                           </strong>
                         </div>
@@ -784,7 +879,9 @@ export function Strategy() {
                           <span>Knockdowns or deaths</span>
                           <strong>
                             {teamData
-                              ? teamData.endgame.filter((record) => record.died || record.fell_over).length
+                              ? teamData.endgame.filter(
+                                  (record) => record.died || record.fell_over
+                                ).length
                               : 0}
                           </strong>
                         </div>
@@ -801,7 +898,10 @@ export function Strategy() {
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <h3 className="font-sports-ns text-2xl uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+                    <h3
+                      className="font-sports-ns text-2xl uppercase tracking-[0.18em]"
+                      style={{ color: theme.accent }}
+                    >
                       Notes Feed
                     </h3>
                   </div>
@@ -817,10 +917,16 @@ export function Strategy() {
                             backgroundColor: theme.surfaceAlt,
                           }}
                         >
-                          <div className="text-[11px] uppercase tracking-[0.24em]" style={{ color: theme.mutedText }}>
+                          <div
+                            className="text-[11px] uppercase tracking-[0.24em]"
+                            style={{ color: theme.mutedText }}
+                          >
                             {comment.label}
                           </div>
-                          <p className="mt-2 text-sm leading-7" style={{ color: theme.text }}>
+                          <p
+                            className="mt-2 text-sm leading-7"
+                            style={{ color: theme.text }}
+                          >
                             {comment.text}
                           </p>
                         </article>
@@ -828,7 +934,10 @@ export function Strategy() {
                     ) : (
                       <div
                         className="rounded-2xl border border-dashed p-4 text-sm"
-                        style={{ borderColor: `${theme.primary}35`, color: theme.mutedText }}
+                        style={{
+                          borderColor: `${theme.primary}35`,
+                          color: theme.mutedText,
+                        }}
                       >
                         No written post-match notes yet.
                       </div>
@@ -844,7 +953,10 @@ export function Strategy() {
                   backgroundColor: theme.surface,
                 }}
               >
-                <h3 className="font-sports-ns text-2xl uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+                <h3
+                  className="font-sports-ns text-2xl uppercase tracking-[0.18em]"
+                  style={{ color: theme.accent }}
+                >
                   Interview Profile
                 </h3>
 
@@ -852,7 +964,9 @@ export function Strategy() {
                   {teamData?.interview.length ? (
                     teamData.interview.map((interview) => (
                       <article
-                        key={`${interview.competition}-${interview.id || interview.team_number}`}
+                        key={`${interview.competition}-${
+                          interview.id || interview.team_number
+                        }`}
                         className="rounded-2xl border p-5"
                         style={{
                           borderColor: `${theme.primary}35`,
@@ -860,7 +974,10 @@ export function Strategy() {
                         }}
                       >
                         <div className="mb-4 flex items-center justify-between gap-3">
-                          <div className="text-sm font-semibold" style={{ color: theme.text }}>
+                          <div
+                            className="text-sm font-semibold"
+                            style={{ color: theme.text }}
+                          >
                             {interview.competition.toUpperCase()}
                           </div>
                           <Badge
@@ -884,7 +1001,10 @@ export function Strategy() {
                   ) : (
                     <div
                       className="rounded-2xl border border-dashed p-5 text-sm"
-                      style={{ borderColor: `${theme.primary}35`, color: theme.mutedText }}
+                      style={{
+                        borderColor: `${theme.primary}35`,
+                        color: theme.mutedText,
+                      }}
                     >
                       No interview profile has been entered yet.
                     </div>
@@ -899,7 +1019,10 @@ export function Strategy() {
                   backgroundColor: theme.surface,
                 }}
               >
-                <h3 className="font-sports-ns text-2xl uppercase tracking-[0.18em]" style={{ color: theme.accent }}>
+                <h3
+                  className="font-sports-ns text-2xl uppercase tracking-[0.18em]"
+                  style={{ color: theme.accent }}
+                >
                   Match Dossiers
                 </h3>
 
@@ -916,10 +1039,16 @@ export function Strategy() {
                       >
                         <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                           <div>
-                            <div className="text-xs uppercase tracking-[0.28em]" style={{ color: theme.mutedText }}>
+                            <div
+                              className="text-xs uppercase tracking-[0.28em]"
+                              style={{ color: theme.mutedText }}
+                            >
                               {match.competition.toUpperCase()}
                             </div>
-                            <h4 className="mt-2 font-sports text-3xl uppercase tracking-[0.14em]" style={{ color: theme.text }}>
+                            <h4
+                              className="mt-2 font-sports text-3xl uppercase tracking-[0.14em]"
+                              style={{ color: theme.text }}
+                            >
                               Match {match.matchNumber}
                             </h4>
                           </div>
@@ -927,19 +1056,27 @@ export function Strategy() {
                             {match.endgame?.climbed ? (
                               <Badge
                                 className="border-0"
-                                style={{ backgroundColor: `${theme.primary}d9`, color: theme.text }}
+                                style={{
+                                  backgroundColor: `${theme.primary}d9`,
+                                  color: theme.text,
+                                }}
                               >
                                 Climbed
                               </Badge>
                             ) : null}
                             {match.endgame?.mechanical_issue ? (
-                              <Badge variant="destructive">Mechanical Issue</Badge>
+                              <Badge variant="destructive">
+                                Mechanical Issue
+                              </Badge>
                             ) : null}
                             {match.teleop?.defended_by_opponent ? (
                               <Badge variant="secondary">Faced Defense</Badge>
                             ) : null}
                             {match.prematch?.no_show ? (
-                              <Badge variant="outline" className="border-zinc-500 text-zinc-200">
+                              <Badge
+                                variant="outline"
+                                className="border-zinc-500 text-zinc-200"
+                              >
                                 No Show
                               </Badge>
                             ) : null}
@@ -947,20 +1084,49 @@ export function Strategy() {
                         </div>
 
                         <div className="space-y-6">
-                          <MatchSection title="Prematch" data={match.prematch} fields={PREMATCH_FIELDS} theme={theme} />
-                          <MatchSection title="Autonomous" data={match.autonomous} fields={AUTONOMOUS_FIELDS} theme={theme} />
-                          <MatchSection title="Teleop" data={match.teleop} fields={TELEOP_FIELDS} theme={theme} />
-                          <MatchSection title="Endgame" data={match.endgame} fields={ENDGAME_FIELDS} theme={theme} />
-                          <MatchSection title="Postmatch" data={match.postmatch} fields={POSTMATCH_FIELDS} theme={theme} />
+                          <MatchSection
+                            title="Prematch"
+                            data={match.prematch}
+                            fields={PREMATCH_FIELDS}
+                            theme={theme}
+                          />
+                          <MatchSection
+                            title="Autonomous"
+                            data={match.autonomous}
+                            fields={AUTONOMOUS_FIELDS}
+                            theme={theme}
+                          />
+                          <MatchSection
+                            title="Teleop"
+                            data={match.teleop}
+                            fields={TELEOP_FIELDS}
+                            theme={theme}
+                          />
+                          <MatchSection
+                            title="Endgame"
+                            data={match.endgame}
+                            fields={ENDGAME_FIELDS}
+                            theme={theme}
+                          />
+                          <MatchSection
+                            title="Postmatch"
+                            data={match.postmatch}
+                            fields={POSTMATCH_FIELDS}
+                            theme={theme}
+                          />
                         </div>
                       </article>
                     ))
                   ) : (
                     <div
                       className="rounded-2xl border border-dashed p-5 text-sm"
-                      style={{ borderColor: `${theme.primary}35`, color: theme.mutedText }}
+                      style={{
+                        borderColor: `${theme.primary}35`,
+                        color: theme.mutedText,
+                      }}
                     >
-                      No match scouting data has been recorded for this team yet.
+                      No match scouting data has been recorded for this team
+                      yet.
                     </div>
                   )}
                 </div>
