@@ -22,6 +22,27 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function getFriendlyAuthErrorMessage(message: string, status?: number) {
+  const normalizedMessage = message.toLowerCase();
+
+  if (status === 403 || normalizedMessage.includes("not authorized")) {
+    return "This Google account is not authorized to access ScoutFerno. Sign in with an approved account or contact a team admin.";
+  }
+
+  if (
+    status === 500 &&
+    normalizedMessage.includes("allowlist is not configured")
+  ) {
+    return "ScoutFerno access has not been configured yet. Ask a team admin to set the allowed Google emails or domains.";
+  }
+
+  if (status === 401) {
+    return "Google sign-in could not be verified. Please try again with your approved account.";
+  }
+
+  return message;
+}
+
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message;
@@ -36,7 +57,12 @@ async function readSessionResponse(response: Response): Promise<AuthSessionRespo
   };
 
   if (!response.ok) {
-    throw new Error(payload.detail || "Authentication request failed.");
+    throw new Error(
+      getFriendlyAuthErrorMessage(
+        payload.detail || "Authentication request failed.",
+        response.status
+      )
+    );
   }
 
   return {

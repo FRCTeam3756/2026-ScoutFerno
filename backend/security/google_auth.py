@@ -91,7 +91,13 @@ def _ensure_authorized_email(email: str) -> None:
     domains = _authorized_domains()
 
     if not emails and not domains:
-        return
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Google sign-in allowlist is not configured. "
+                "Set AUTHORIZED_GOOGLE_EMAILS or AUTHORIZED_GOOGLE_DOMAINS."
+            ),
+        )
 
     normalized_email = email.lower()
     email_domain = normalized_email.split("@")[-1]
