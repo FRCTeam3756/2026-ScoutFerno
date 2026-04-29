@@ -54,6 +54,4 @@ def health():
 
 
 if __name__ == "__main__":
-    # Gabe, update this if you changed the host
     uvicorn.run("main:app", host="127.0.0.1", port=8000)
-    

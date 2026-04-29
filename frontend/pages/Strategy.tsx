@@ -680,19 +680,19 @@ export function Strategy() {
                     <ProfileMetric
                       label="Matches"
                       value={String(matchBundles.length)}
-                      caption="Scouted match dossiers"
+                      caption="Total matches scouted"
                       theme={theme}
                     />
                     <ProfileMetric
                       label="Auto Avg"
                       value={averageAuto === null ? "—" : averageAuto.toFixed(1)}
-                      caption="Average auto fuel scored"
+                      caption="Average auto score"
                       theme={theme}
                     />
                     <ProfileMetric
                       label="Teleop Avg"
                       value={averageTeleop === null ? "—" : averageTeleop.toFixed(1)}
-                      caption="Average teleop fuel scored"
+                      caption="Average teleop score"
                       theme={theme}
                     />
                     <ProfileMetric
@@ -732,7 +732,7 @@ export function Strategy() {
                       <div className="mt-4 space-y-3 text-sm leading-6" style={{ color: theme.text }}>
                         <div className="flex items-center justify-between gap-4">
                           <span>Subjective Score</span>
-                          <strong>{averageEfficiency === null ? "—" : averageEfficiency.toFixed(1)}</strong>
+                          <strong>{averageEfficiency === null ? "—" : averageEfficiency.toFixed(1)} / 5</strong>
                         </div>
                         <div className="flex items-center justify-between gap-4">
                           <span>Defence Played Count</span>
