@@ -4,7 +4,7 @@ from ..models.teams_data_models import (
     Teams_Data_Update,
 )
 from ..models.sql_models import team_engine
-from typing import Any
+from typing import Any, Dict
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
@@ -127,7 +127,7 @@ async def delete_teams_data_by_team_competition(
         return results
 
 
-async def get_team_data(team_number: int, competition: str) -> dict[str, Any]:
+async def get_team_data(team_number: int, competition: str) -> Dict[str, Any]:
     try:
         team_data = sb.get_team_event(team_number, competition)
     except UserWarning as exc:
@@ -138,7 +138,7 @@ async def get_team_data(team_number: int, competition: str) -> dict[str, Any]:
     return team_data
 
 
-async def get_team_profile(team_number: int) -> dict[str, Any]:
+async def get_team_profile(team_number: int) -> Dict[str, Any]:
     try:
         team_profile = sb.get_team(team_number)
     except UserWarning as exc:
@@ -146,19 +146,20 @@ async def get_team_profile(team_number: int) -> dict[str, Any]:
 
     if team_profile is None:
         raise HTTPException(status_code=404, detail="Team profile not found")
+    
     return team_profile
 
 
 async def build_team_data_from_statbotics(
     team_number: int,
     competition: str,
-    team_profile: dict[str, Any],
-    team_event_data: dict[str, Any],
+    team_profile: Dict[str, Any],
+    team_event_data: Dict[str, Any],
 ) -> Teams_Data_Create:
-    epa = team_event_data.get("epa") or {}
-    epa_stats = epa.get("stats") or {}
-    record = team_event_data.get("record") or {}
-    total_record = record.get("total") or {}
+    epa = team_event_data.get("epa", {})
+    epa_stats = epa.get("stats", {})
+    record = team_event_data.get("record", {})
+    total_record = record.get("total", {})
 
     return Teams_Data_Create(
         team_number=team_number,

@@ -8,4 +8,3 @@ from .sql_models import create_team_db_and_tables
 async def team_lifespan(app: FastAPI):
     create_team_db_and_tables()
     yield
-

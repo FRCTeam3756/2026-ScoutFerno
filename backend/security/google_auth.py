@@ -1,4 +1,5 @@
 import os
+from typing import Dict, List, Optional
 
 from fastapi import HTTPException
 from google.auth.transport.requests import Request as GoogleRequest
@@ -10,7 +11,7 @@ SESSION_COOKIE_NAME = "scoutferno_session"
 SESSION_USER_KEY = "user"
 
 
-def _csv_env(name: str) -> list[str]:
+def _csv_env(name: str) -> List[str]:
     raw = os.getenv(name, "")
     return [value.strip() for value in raw.split(",") if value.strip()]
 
@@ -21,7 +22,7 @@ def normalize_origin(origin: str) -> str:
     return f"https://{origin}"
 
 
-def get_cors_origins() -> list[str]:
+def get_cors_origins() -> Dict[str, Optional[str]]:
     default_origins = [
         "https://scouting.ramferno.com",
         "https://api.ramferno.com",
@@ -36,7 +37,7 @@ def get_cors_origins() -> list[str]:
     combined_origins = [normalize_origin(
         origin) for origin in default_origins] + configured_origins
 
-    return list(dict.fromkeys(combined_origins))
+    return dict.fromkeys(combined_origins)
 
 
 def get_session_secret() -> str:
@@ -47,7 +48,7 @@ def get_session_cookie_secure() -> bool:
     return os.getenv("AUTH_COOKIE_SECURE", "false").lower() == "true"
 
 
-def get_session_cookie_domain() -> str | None:
+def get_session_cookie_domain() -> Optional[str]:
     return os.getenv("AUTH_COOKIE_DOMAIN", None)
 
 
@@ -58,7 +59,7 @@ def get_session_max_age_seconds() -> int:
         return 43200
 
 
-def get_google_client_ids() -> list[str]:
+def get_google_client_ids() -> List[str]:
     client_ids = _csv_env("GOOGLE_CLIENT_IDS")
     single_client_id = os.getenv("GOOGLE_CLIENT_ID")
 
@@ -79,7 +80,7 @@ def _authorized_domains() -> set[str]:
     }
 
 
-def _ensure_google_client_ids_configured() -> list[str]:
+def _ensure_google_client_ids_configured() -> List[str]:
     client_ids = get_google_client_ids()
     if not client_ids:
         raise HTTPException(
@@ -97,7 +98,7 @@ def _ensure_authorized_email(email: str) -> None:
         raise HTTPException(
             status_code=500,
             detail=(
-                "Google sign-in allowlist is not configured. "
+                "Google sign-in allowList is not configured. "
                 "Set AUTHORIZED_GOOGLE_EMAILS or AUTHORIZED_GOOGLE_DOMAINS."
             ),
         )

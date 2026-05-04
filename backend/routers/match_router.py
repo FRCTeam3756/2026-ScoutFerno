@@ -5,7 +5,8 @@ from ..models.match_data_models import Match_Data
 from ..security.google_auth_guard import require_auth
 
 
-router = APIRouter(prefix="", tags=["Data"], dependencies=[Depends(require_auth)])
+router = APIRouter(prefix="", tags=["Data"],
+                   dependencies=[Depends(require_auth)])
 
 
 @router.get("/match_data/", response_model=Match_Data)

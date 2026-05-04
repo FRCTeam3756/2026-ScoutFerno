@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
@@ -8,11 +9,11 @@ class GoogleAuthRequest(BaseModel):
 class AuthenticatedUser(BaseModel):
     email: EmailStr
     name: str
-    picture: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
+    picture: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
 
 class AuthSessionResponse(BaseModel):
     authenticated: bool
-    user: AuthenticatedUser | None = None
+    user: Optional[AuthenticatedUser] = None

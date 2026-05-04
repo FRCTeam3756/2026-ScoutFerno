@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
-from ..models.interview_data_models import Interview_Data, Interview_Data_Create, Interview_Data_Update
+from ..models.interview_data_models import Interview_Data, Interview_Data_Create
 from ..models.sql_models import team_engine
 
 

@@ -7,7 +7,8 @@ from pydantic import BaseModel
 
 from ..security.google_auth_guard import require_auth
 
-router = APIRouter(prefix="/videos", tags=["videos"], dependencies=[Depends(require_auth)])
+router = APIRouter(
+    prefix="/videos", tags=["videos"], dependencies=[Depends(require_auth)])
 
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 CLOUDFLARE_STREAM_TOKEN = os.getenv("CLOUDFLARE_STREAM_TOKEN")
@@ -26,7 +27,8 @@ def encode_metadata_value(value: str) -> str:
 @router.post("/direct-upload")
 async def create_direct_upload(payload: DirectUploadRequest):
     if not CLOUDFLARE_ACCOUNT_ID or not CLOUDFLARE_STREAM_TOKEN:
-        raise HTTPException(status_code=500, detail="Cloudflare env vars are missing")
+        raise HTTPException(
+            status_code=500, detail="Cloudflare env vars are missing")
 
     upload_metadata = ",".join(
         [
@@ -62,7 +64,8 @@ async def create_direct_upload(payload: DirectUploadRequest):
 
     upload_url = response.headers.get("Location")
     if not upload_url:
-        raise HTTPException(status_code=500, detail="Cloudflare did not return Location header")
+        raise HTTPException(
+            status_code=500, detail="Cloudflare did not return Location header")
 
     video_uid = upload_url.rstrip("/").split("/")[-1]
 
