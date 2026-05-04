@@ -1,8 +1,14 @@
 /// <reference types="vite/client" />
 
+
+declare module '*.webp' {
+  const src: string;
+  export default src;
+}
+
 interface ImportMetaEnv {
-  readonly API_BASE_URL?: string;
-  readonly GOOGLE_CLIENT_ID?: string;
+  readonly VITE_API_BASE_URL?: string;
+  readonly VITE_GOOGLE_CLIENT_ID?: string;
 }
 
 interface ImportMeta {
