@@ -5,3 +5,11 @@ preview_urls = true
 
 [assets]
 directory = "./dist"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
