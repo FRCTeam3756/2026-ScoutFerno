@@ -26,28 +26,30 @@ async def create_interview_data(match_data: Interview_Data_Create):
 async def read_interview_data(flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Data not found")
         return results
 
+
 async def read_interview_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.team_number == team_number
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
+
 
 async def read_interview_data_by_team_competition(competition: str, team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.team_number == team_number,
             Interview_Data.competition == competition
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
@@ -71,7 +73,8 @@ async def update_interview_data(competition: str, team_number: int):
         session.refresh(db_match)
 
         return db_match
-    
+
+
 async def delete_interview_data(competition: str, team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
@@ -88,6 +91,7 @@ async def delete_interview_data(competition: str, team_number: int, flagError: b
         session.commit()
         return db_match
 
+
 async def delete_interview_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Interview_Data).where(
@@ -102,4 +106,3 @@ async def delete_interview_data_by_team(team_number: int, flagError: bool = True
             session.delete(match)
         session.commit()
         return results
-    

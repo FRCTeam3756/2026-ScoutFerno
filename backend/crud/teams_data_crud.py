@@ -1,16 +1,15 @@
-import statbotics; sb = statbotics.Statbotics()
-
-from fastapi import HTTPException
-from sqlalchemy.exc import IntegrityError
-from sqlmodel import Session, select
-from typing import Any
-
-from ..models.sql_models import team_engine
 from ..models.teams_data_models import (
     Teams_Data,
     Teams_Data_Create,
     Teams_Data_Update,
 )
+from ..models.sql_models import team_engine
+from typing import Any
+from sqlmodel import Session, select
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
+import statbotics
+sb = statbotics.Statbotics()
 
 
 async def create_teams_data(team_data: Teams_Data_Create):
@@ -41,7 +40,8 @@ async def read_teams_data(flagError: bool = True):
 
 async def read_teams_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Teams_Data).where(Teams_Data.team_number == team_number)
+        statement = select(Teams_Data).where(
+            Teams_Data.team_number == team_number)
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
@@ -60,7 +60,8 @@ async def read_teams_data_by_team_competition(
         )
         results = session.exec(statement).all()
         if flagError and not results:
-            raise HTTPException(status_code=404, detail="Team competition data not found")
+            raise HTTPException(
+                status_code=404, detail="Team competition data not found")
         return results
 
 
@@ -92,7 +93,8 @@ async def update_teams_data(
 
 async def delete_teams_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
-        statement = select(Teams_Data).where(Teams_Data.team_number == team_number)
+        statement = select(Teams_Data).where(
+            Teams_Data.team_number == team_number)
         results = session.exec(statement).all()
 
         if flagError and not results:

@@ -1,15 +1,14 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
-from ..models.match_data_models import Match_Data, Match_Data_Create, Match_Data_Update
+from ..models.match_data_models import Match_Data, Match_Data_Update
 from ..models.sql_models import team_engine
-
 
 
 async def read_match_data(flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Match_Data).where(
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Data not found")
@@ -20,24 +19,24 @@ async def read_match_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Match_Data).where(
             Match_Data.team_number == team_number
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Team data not found")
         return results
-     
+
 
 async def read_match_data_by_match(competition: str, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
         statement = select(Match_Data).where(
             Match_Data.competition == competition,
             Match_Data.match_number == match_number
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
             raise HTTPException(status_code=404, detail="Match data not found")
         return results
-    
+
 
 async def read_match_data_by_team_match(competition: str, team_number: int, match_number: int, flagError: bool = True):
     with Session(team_engine) as session:
@@ -45,10 +44,11 @@ async def read_match_data_by_team_match(competition: str, team_number: int, matc
             Match_Data.competition == competition,
             Match_Data.team_number == team_number,
             Match_Data.match_number == match_number
-            )
+        )
         results = session.exec(statement).all()
         if flagError and not results:
-            raise HTTPException(status_code=404, detail="Team match data not found")
+            raise HTTPException(
+                status_code=404, detail="Team match data not found")
         return results
 
 
@@ -90,7 +90,7 @@ async def delete_match_data_by_match(competition: str, match_number: int, flagEr
             session.delete(match)
         session.commit()
         return results
-    
+
 
 async def delete_match_data_by_team(team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
@@ -106,7 +106,7 @@ async def delete_match_data_by_team(team_number: int, flagError: bool = True):
             session.delete(match)
         session.commit()
         return results
-    
+
 
 async def delete_match_data_by_team_match(competition: str, match_number: int, team_number: int, flagError: bool = True):
     with Session(team_engine) as session:
