@@ -104,6 +104,7 @@ export function Header() {
     signInWithGoogleCredential,
     signOut,
   } = useAuth();
+  const [modalError, setModalError] = useState<string | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [pendingPath, setPendingPath] = useState<string | null>(null);
 
@@ -125,13 +126,17 @@ export function Header() {
   };
 
   const handlePromptCredential = async (credential: string) => {
-    await signInWithGoogleCredential(credential);
-
-    setShowLoginPrompt(false);
-
-    if (pendingPath) {
-      navigate(pendingPath);
-      setPendingPath(null);
+    setModalError(null);
+    try {
+      await signInWithGoogleCredential(credential);
+      setShowLoginPrompt(false);
+      if (pendingPath) {
+        navigate(pendingPath);
+        setPendingPath(null);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Sign-in failed.";
+      setModalError(`Couldn't sign you in: ${msg}`);
     }
   };
 
@@ -140,11 +145,11 @@ export function Header() {
       <header className="w-full border-b border-zinc-700 bg-zinc-900 px-4 py-3 md:px-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="flex items-center gap-6">
-          <NavLink key={""} to={""} className="flex items-center">
-            <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
-              Scout<span className="text-orange-400">Ferno</span>
-            </span>
-          </NavLink>
+            <NavLink key={""} to={""} className="flex items-center">
+              <span className="text-white font-mono text-sm font-semibold tracking-widest uppercase">
+                Scout<span className="text-orange-400">Ferno</span>
+              </span>
+            </NavLink>
 
             <div className="hidden h-4 w-px self-center bg-zinc-700 md:block" />
 
@@ -255,7 +260,9 @@ export function Header() {
 
         {error ? (
           <div className="mt-3 flex items-start justify-between gap-3 rounded-md border border-red-800 bg-red-950/70 px-4 py-3 text-sm text-red-100">
-            <p>{error}</p>
+            <p>
+              <span className="font-semibold">Auth error:</span> {error}
+            </p>
             <button
               type="button"
               onClick={clearError}
@@ -272,6 +279,7 @@ export function Header() {
         onDismiss={() => {
           setShowLoginPrompt(false);
           setPendingPath(null);
+          setModalError(null);
         }}
       >
         <div className="space-y-4 px-5 pb-5">
@@ -280,8 +288,7 @@ export function Header() {
               Sign In Required
             </h2>
             <p className="text-sm text-zinc-300">
-              Sign in with Google to open
-              {" "}
+              Sign in with Google to open{" "}
               <span className="font-mono text-zinc-100">
                 {pendingPath || "this page"}
               </span>
@@ -289,9 +296,10 @@ export function Header() {
             </p>
           </div>
 
-          {error ? (
-            <p className="rounded border border-red-800 bg-red-950/60 px-3 py-2 text-sm text-red-200">
-              {error}
+          {modalError ? (
+            <p className="...">
+              <span className="font-semibold">Sign-in failed:</span>{" "}
+              {modalError}
             </p>
           ) : null}
 

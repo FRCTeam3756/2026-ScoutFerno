@@ -34,7 +34,6 @@ type KeyValueField<T extends object> = {
 };
 
 const PREMATCH_FIELDS: KeyValueField<PrematchRecord>[] = [
-  { key: "scouter", label: "Scouter" },
   { key: "robot_position", label: "Robot Position" },
   { key: "no_show", label: "No Show" },
 ];

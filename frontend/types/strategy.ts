@@ -16,7 +16,6 @@ interface MatchRecordBase extends TeamRecordBase {
 }
 
 export interface PrematchRecord extends MatchRecordBase {
-  scouter: string | null;
   robot_position: string | null;
   no_show: boolean | null;
   id?: number;

@@ -116,7 +116,7 @@ export async function fetchConfigFromURL(url: string): Promise<Result<void>> {
   }
 }
 
-export async function pushDataToBackend(): Promise<Result<void>> {
+export async function pushDataToBackend(user: string): Promise<Result<void>> {
   const state = useScoutFernoState.getState();
   const flat = state.fieldValues.reduce((acc, { code, value }) => {
     acc[code] = value;
@@ -124,8 +124,8 @@ export async function pushDataToBackend(): Promise<Result<void>> {
   }, {} as Record<string, any>);
 
   const payload = {
+    user,
     prematch: {
-      scouter: flat.scouter,
       robot_position: flat.robot_position,
       no_show: flat.no_show,
       team_number: flat.robot?.team_number,

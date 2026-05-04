@@ -6,7 +6,6 @@ from .sql_models import Database_Data_Plus
 
 
 class Prematch_Data_Base(Database_Data_Plus):
-    scouter: Optional[str] = Field(default=None, index=True)
     robot_position: Optional[str] = Field(default=None, index=True)
     no_show: Optional[bool] = Field(default=None, index=True)
 
@@ -24,6 +23,5 @@ class Prematch_Data_Create(Prematch_Data_Base):
 
 
 class Prematch_Data_Update(SQLModel):
-    scouter: Optional[str] = None
     robot_position: Optional[str] = None
     no_show: Optional[bool] = None
