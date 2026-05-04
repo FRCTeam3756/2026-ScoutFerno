@@ -179,7 +179,7 @@ export async function pushDataToBackend(user: string): Promise<Result<void>> {
   };
 
   try {
-    const response = await apiFetch("/api/data/all_data/", {
+    const response = await apiFetch("/match_data/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

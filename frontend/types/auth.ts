@@ -2,8 +2,8 @@ export type AuthUser = {
   email: string;
   name: string;
   picture: string | null;
-  given_name: string | null;
-  family_name: string | null;
+  first_name: string | null;
+  last_name: string | null;
 };
 
 export type AuthSessionResponse = {

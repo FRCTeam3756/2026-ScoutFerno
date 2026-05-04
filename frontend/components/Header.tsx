@@ -93,7 +93,7 @@ const statusConfig: Record<
 
 export function Header() {
   const navigate = useNavigate();
-  const status = useBackendHealth(buildApiUrl("/api/health"));
+  const status = useBackendHealth(buildApiUrl("/health"));
   const { label, dot, text } = statusConfig[status];
   const {
     user,

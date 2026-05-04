@@ -5,7 +5,7 @@ from ..models.interview_data_models import Interview_Data, Interview_Data_Create
 from ..security.google_auth_guard import require_auth
 
 
-router = APIRouter(prefix="/data", tags=["Data"], dependencies=[Depends(require_auth)])
+router = APIRouter(prefix="", tags=["Data"], dependencies=[Depends(require_auth)])
 
 
 @router.post("/interview_data/", response_model=Interview_Data)

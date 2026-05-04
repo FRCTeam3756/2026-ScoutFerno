@@ -51,7 +51,9 @@ function getErrorMessage(error: unknown) {
   return "Something went wrong while contacting the backend.";
 }
 
-async function readSessionResponse(response: Response): Promise<AuthSessionResponse> {
+async function readSessionResponse(
+  response: Response
+): Promise<AuthSessionResponse> {
   const payload = (await response.json()) as Partial<AuthSessionResponse> & {
     detail?: string;
   };
@@ -79,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = async () => {
     try {
-      const response = await apiFetch("/api/auth/session");
+      const response = await apiFetch("/auth/session");
       const session = await readSessionResponse(response);
       setUser(session.user);
       setError(null);
@@ -100,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await apiFetch("/api/auth/google", {
+      const response = await apiFetch("/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await apiFetch("/api/auth/logout", {
+      const response = await apiFetch("/auth/logout", {
         method: "POST",
       });
 

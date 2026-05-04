@@ -19,7 +19,7 @@
 #     Teams_Data_Update,
 # )
 
-# router = APIRouter(prefix="/data", tags=["Data"])
+# router = APIRouter(prefix="", tags=["Data"])
 
 # sb = statbotics.Statbotics()
 

@@ -19,7 +19,7 @@ export function CommitButton(props: CommitButtonProps) {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    const result = await pushDataToBackend(user?.given_name ?? "Unknown User");
+    const result = await pushDataToBackend(user?.first_name ?? "Unknown User");
 
     if (result.success) {
       setShowModal(false);

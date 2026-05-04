@@ -9,6 +9,7 @@ from ..models.auth_models import AuthenticatedUser
 SESSION_COOKIE_NAME = "scoutferno_session"
 SESSION_USER_KEY = "user"
 
+
 def _csv_env(name: str) -> list[str]:
     raw = os.getenv(name, "")
     return [value.strip() for value in raw.split(",") if value.strip()]
@@ -30,8 +31,10 @@ def get_cors_origins() -> list[str]:
         "7e6fdead-4433-4b0b-ac31-45524d5ba102.cfargotunnel.com",
     ]
 
-    configured_origins = [normalize_origin(origin) for origin in _csv_env("CORS_ALLOW_ORIGINS")]
-    combined_origins = [normalize_origin(origin) for origin in default_origins] + configured_origins
+    configured_origins = [normalize_origin(
+        origin) for origin in _csv_env("CORS_ALLOW_ORIGINS")]
+    combined_origins = [normalize_origin(
+        origin) for origin in default_origins] + configured_origins
 
     return list(dict.fromkeys(combined_origins))
 
@@ -105,7 +108,8 @@ def _ensure_authorized_email(email: str) -> None:
     if normalized_email in emails or email_domain in domains:
         return
 
-    raise HTTPException(status_code=403, detail="This Google account is not authorized.")
+    raise HTTPException(
+        status_code=403, detail="This Google account is not authorized.")
 
 
 def verify_google_credential(credential: str) -> AuthenticatedUser:
@@ -118,7 +122,8 @@ def verify_google_credential(credential: str) -> AuthenticatedUser:
             audience=None,
         )
     except ValueError as exc:
-        raise HTTPException(status_code=401, detail="Invalid Google credential.") from exc
+        raise HTTPException(
+            status_code=401, detail="Invalid Google credential.") from exc
 
     audience = payload.get("aud")
     issuer = payload.get("iss")
@@ -126,13 +131,16 @@ def verify_google_credential(credential: str) -> AuthenticatedUser:
     email_verified = payload.get("email_verified")
 
     if audience not in allowed_client_ids:
-        raise HTTPException(status_code=401, detail="Google credential audience is not allowed.")
+        raise HTTPException(
+            status_code=401, detail="Google credential audience is not allowed.")
 
     if issuer not in {"accounts.google.com", "https://accounts.google.com"}:
-        raise HTTPException(status_code=401, detail="Google credential issuer is invalid.")
+        raise HTTPException(
+            status_code=401, detail="Google credential issuer is invalid.")
 
     if not email or not email_verified:
-        raise HTTPException(status_code=401, detail="Google account email is not verified.")
+        raise HTTPException(
+            status_code=401, detail="Google account email is not verified.")
 
     _ensure_authorized_email(email)
 
@@ -140,6 +148,6 @@ def verify_google_credential(credential: str) -> AuthenticatedUser:
         email=email,
         name=payload.get("name") or email,
         picture=payload.get("picture"),
-        given_name=payload.get("given_name"),
-        family_name=payload.get("family_name"),
+        first_name=payload.get("first_name"),
+        last_name=payload.get("last_name"),
     )

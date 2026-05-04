@@ -11,7 +11,7 @@ async function readApiError(response: Response) {
 }
 
 export async function fetchTeamSummaries(signal?: AbortSignal) {
-  const response = await apiFetch("/api/data/all_data/teams", { signal });
+  const response = await apiFetch("/match_data/teams", { signal });
 
   if (!response.ok) {
     throw new Error(await readApiError(response));
@@ -21,7 +21,7 @@ export async function fetchTeamSummaries(signal?: AbortSignal) {
 }
 
 export async function fetchTeamData(teamNumber: number, signal?: AbortSignal) {
-  const response = await apiFetch(`/api/data/all_data/team/${teamNumber}`, {
+  const response = await apiFetch(`/match_data/team/${teamNumber}`, {
     signal,
   });
 
