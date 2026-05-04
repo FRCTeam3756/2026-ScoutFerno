@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 from fastapi import HTTPException
 from google.auth.transport.requests import Request as GoogleRequest
@@ -22,7 +22,7 @@ def normalize_origin(origin: str) -> str:
     return f"https://{origin}"
 
 
-def get_cors_origins() -> Dict[str, Optional[str]]:
+def get_cors_origins() -> List[str]:
     default_origins = [
         "https://scouting.ramferno.com",
         "https://api.ramferno.com",
@@ -37,7 +37,7 @@ def get_cors_origins() -> Dict[str, Optional[str]]:
     combined_origins = [normalize_origin(
         origin) for origin in default_origins] + configured_origins
 
-    return dict.fromkeys(combined_origins)
+    return list(dict.fromkeys(combined_origins))
 
 
 def get_session_secret() -> str:
@@ -69,11 +69,11 @@ def get_google_client_ids() -> List[str]:
     return client_ids
 
 
-def _authorized_emails() -> set[str]:
+def _authorized_emails() -> Set[str]:
     return {email.lower() for email in _csv_env("AUTHORIZED_GOOGLE_EMAILS")}
 
 
-def _authorized_domains() -> set[str]:
+def _authorized_domains() -> Set[str]:
     return {
         domain.lower().lstrip("@")
         for domain in _csv_env("AUTHORIZED_GOOGLE_DOMAINS")
