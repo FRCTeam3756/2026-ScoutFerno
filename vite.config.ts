@@ -4,6 +4,8 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  base: "/",
+
   plugins: [
     react(),
     tsconfigPaths({
@@ -14,6 +16,9 @@ export default defineConfig({
       manifest: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
+
+        navigateFallback: "/index.html",
+        directoryIndex: "index.html",
       },
     }),
   ],
