@@ -9,7 +9,7 @@ router = APIRouter(prefix="", tags=["Data"],
                    dependencies=[Depends(require_auth)])
 
 
-@router.get("/match_data/", response_model=Match_Data)
+@router.get("/match_data/all_teams", response_model=Match_Data)
 async def read_match_data_route():
     return await read_match_data()
 

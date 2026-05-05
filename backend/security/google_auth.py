@@ -25,11 +25,13 @@ def normalize_origin(origin: str) -> str:
 def get_cors_origins() -> List[str]:
     default_origins = [
         "https://scouting.ramferno.com",
-        "https://api.ramferno.com",
+        
+        "http://127.0.0.1:5173",
         "http://localhost:5173",
-        "476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com",
-        "bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com",
-        "7e6fdead-4433-4b0b-ac31-45524d5ba102.cfargotunnel.com",
+        
+        "https://476905af-6beb-4714-b1c7-6fda8308185d.cfargotunnel.com",
+        "https://bab0278a-7e0b-43fd-810e-3158fae509f6.cfargotunnel.com",
+        "https://7e6fdead-4433-4b0b-ac31-45524d5ba102.cfargotunnel.com",
     ]
 
     configured_origins = [normalize_origin(

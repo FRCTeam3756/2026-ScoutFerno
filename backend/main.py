@@ -15,7 +15,7 @@ from .security.google_auth import (
     get_session_secret,
 )
 
-app = FastAPI(lifespan=team_lifespan, root_path="", redirect_slashes=False)
+app = FastAPI(lifespan=team_lifespan, root_path="", redirect_slashes=True)
 
 app.add_middleware(
     SessionMiddleware,
@@ -41,6 +41,13 @@ app.include_router(match_router.router)
 app.include_router(interview_data_router.router)
 app.include_router(security_router.router)
 app.include_router(video_router.router)
+
+
+@app.middleware("http")
+async def add_coop_header(request, call_next):
+    response = await call_next(request)
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin-allow-popups"
+    return response
 
 
 @app.get("/health")

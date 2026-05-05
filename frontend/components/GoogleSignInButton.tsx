@@ -48,6 +48,7 @@ export function GoogleSignInButton({
   disabled = false,
   onCredential,
 }: GoogleSignInButtonProps) {
+  const initializedRef = useRef(false);
   const buttonRef = useRef<HTMLDivElement | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -56,6 +57,7 @@ export function GoogleSignInButton({
     let cancelled = false;
 
     const initialize = async () => {
+      if (initializedRef.current) return;
       if (!clientId) {
         setLoadError("Set Google Client ID to enable Google sign-in.");
         return;
@@ -71,17 +73,12 @@ export function GoogleSignInButton({
         window.google.accounts.id.initialize({
           client_id: clientId,
           callback: async (response) => {
-            if (!response.credential) {
-              return;
-            }
-
-            try {
-              await onCredential(response.credential);
-            } catch {
-              // AuthProvider surfaces the message in-app.
-            }
+            if (!response.credential) return;
+            await onCredential(response.credential);
           },
         });
+
+        initializedRef.current = true;
 
         buttonRef.current.innerHTML = "";
         window.google.accounts.id.renderButton(buttonRef.current, {
@@ -106,7 +103,7 @@ export function GoogleSignInButton({
     return () => {
       cancelled = true;
     };
-  }, [clientId, onCredential]);
+  }, [clientId]);
 
   if (loadError) {
     return (

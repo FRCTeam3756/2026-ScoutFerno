@@ -24,11 +24,11 @@ class Match_Data_Base(Database_Data_Plus):
     fuel_fed_passed: Optional[int] = Field(default=None, index=True)
     opp_zone_actions: Optional[str] = Field(default=None, index=True)
 
-    climbed: Optional[bool] =  Field(default=False, index = True)
-    climb_position: Optional[str] = Field(default=None, index = True)
-    mechanical_issue: Optional[bool] =Field(default=False, index = True)
-    died: Optional[bool] =Field(default=False, index = True)
-    fell_over: Optional[bool] =Field(default=False, index = True)
+    climbed: Optional[bool] = Field(default=False, index=True)
+    climb_position: Optional[str] = Field(default=None, index=True)
+    mechanical_issue: Optional[bool] = Field(default=False, index=True)
+    died: Optional[bool] = Field(default=False, index=True)
+    fell_over: Optional[bool] = Field(default=False, index=True)
 
     scoring_efficiency: Optional[float] = Field(default=None, index=True)
     scored_how: Optional[str] = Field(default=None, index=True)
@@ -74,7 +74,7 @@ class Match_Data_Update(SQLModel):
     mechanical_issue: Optional[bool] = None
     died: Optional[bool] = None
     fell_over: Optional[bool] = None
-    
+
     scoring_efficiency: Optional[float] = None
     scored_how: Optional[str] = None
     scoring_location: Optional[str] = None
