@@ -94,7 +94,7 @@ export const useScoutFernoState = createStore<ScoutFernoState>(
         formData: parsedConfig.data,
       } as ScoutFernoState;
     },
-  }
+  },
 );
 
 export function resetToDefaultConfig() {
@@ -106,7 +106,7 @@ export async function fetchConfigFromURL(url: string): Promise<Result<void>> {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch config from URL: ${response.statusText}`
+        `Failed to fetch config from URL: ${response.statusText}`,
       );
     }
     const configText = await response.text();
@@ -118,10 +118,13 @@ export async function fetchConfigFromURL(url: string): Promise<Result<void>> {
 
 export async function pushDataToBackend(user: string): Promise<Result<void>> {
   const state = useScoutFernoState.getState();
-  const flat = state.fieldValues.reduce((acc, { code, value }) => {
-    acc[code] = value;
-    return acc;
-  }, {} as Record<string, any>);
+  const flat = state.fieldValues.reduce(
+    (acc, { code, value }) => {
+      acc[code] = value;
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
 
   const payload = {
     user,
@@ -210,7 +213,7 @@ export function updateValue(code: string, data: any) {
       if (field) {
         field.value = data;
       }
-    })
+    }),
   );
 }
 
@@ -225,7 +228,7 @@ export function resetFields() {
 
 export function forceResetFields() {
   window.dispatchEvent(
-    new CustomEvent("forceResetFields", { detail: "forceReset" })
+    new CustomEvent("forceResetFields", { detail: "forceReset" }),
   );
 }
 
@@ -258,7 +261,7 @@ export function setConfig(configText: string): Result<void> {
 
 export function inputSelector<T extends InputBase>(
   section: string,
-  code: string
+  code: string,
 ): (state: ScoutFernoState) => T | undefined {
   return (state: ScoutFernoState) => {
     const formData = state.formData;

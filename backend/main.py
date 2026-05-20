@@ -4,8 +4,6 @@ from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 import uvicorn
 
-from .core.lifespan import team_lifespan
-from .routers import match_data_router, security_router, video_router, interview_data_router
 from .security.google_auth import (
     SESSION_COOKIE_NAME,
     get_cors_origins,
@@ -15,7 +13,7 @@ from .security.google_auth import (
     get_session_secret,
 )
 
-app = FastAPI(lifespan=team_lifespan, root_path="", redirect_slashes=True)
+app = FastAPI(root_path="", redirect_slashes=True)
 
 app.add_middleware(
     SessionMiddleware,
@@ -36,11 +34,6 @@ app.add_middleware(
 )
 
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=["127.0.0.1"])
-
-app.include_router(match_data_router.router)
-app.include_router(interview_data_router.router)
-app.include_router(security_router.router)
-app.include_router(video_router.router)
 
 
 @app.middleware("http")

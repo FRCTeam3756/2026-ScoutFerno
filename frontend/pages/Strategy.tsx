@@ -13,7 +13,7 @@ import type {
   PrematchRecord,
   TeamAllData,
   TeamSummary,
-  TeleopRecord,
+  TeleopRecord
 } from "../types/strategy";
 import { fetchTeamData, fetchTeamSummaries } from "../util/strategy";
 import { getTeamTheme } from "../util/teamTheme";
@@ -125,7 +125,7 @@ function formatValue(value: unknown) {
 
 function average(values: Array<number | null | undefined>) {
   const valid = values.filter(
-    (value): value is number => typeof value === "number"
+    (value): value is number => typeof value === "number",
   );
 
   if (!valid.length) {
@@ -146,7 +146,7 @@ function percent(part: number, total: number) {
 function uniqueNonEmpty(values: Array<string | null | undefined>) {
   return [
     ...new Set(
-      values.filter((value): value is string => Boolean(value && value.trim()))
+      values.filter((value): value is string => Boolean(value && value.trim())),
     ),
   ];
 }
@@ -259,7 +259,7 @@ function KeyValueGrid<T extends object>({
           </dt>
           <dd className="mt-2 text-sm leading-6" style={{ color: theme.text }}>
             {formatValue(
-              (data as Record<PropertyKey, unknown>)[field.key as PropertyKey]
+              (data as Record<PropertyKey, unknown>)[field.key as PropertyKey],
             )}
           </dd>
         </div>
@@ -347,7 +347,7 @@ export function Strategy() {
         setDirectoryError(
           error instanceof Error
             ? error.message
-            : "Unable to load the team directory."
+            : "Unable to load the team directory.",
         );
       })
       .finally(() => {
@@ -382,7 +382,7 @@ export function Strategy() {
         }
 
         setTeamError(
-          error instanceof Error ? error.message : "Unable to load team data."
+          error instanceof Error ? error.message : "Unable to load team data.",
         );
         setTeamData(null);
       })
@@ -397,7 +397,7 @@ export function Strategy() {
 
   useEffect(() => {
     const summary = teamSummaries.find(
-      (team) => team.team_number === selectedTeamNumber
+      (team) => team.team_number === selectedTeamNumber,
     );
 
     if (summary && !query.trim()) {
@@ -405,24 +405,23 @@ export function Strategy() {
     }
   }, [query, selectedTeamNumber, teamSummaries]);
 
-  const filteredTeams = teamSummaries
-    .filter((team) => {
-      if (!deferredQuery.trim()) {
-        return true;
-      }
+  const filteredTeams = teamSummaries.filter((team) => {
+    if (!deferredQuery.trim()) {
+      return true;
+    }
 
-      const normalizedQuery = deferredQuery.toLowerCase();
-      return (
-        String(team.team_number).includes(normalizedQuery) ||
-        (team.name || "").toLowerCase().includes(normalizedQuery) ||
-        team.competitions.some((competition) =>
-          competition.toLowerCase().includes(normalizedQuery)
-        )
-      );
-    });
+    const normalizedQuery = deferredQuery.toLowerCase();
+    return (
+      String(team.team_number).includes(normalizedQuery) ||
+      (team.name || "").toLowerCase().includes(normalizedQuery) ||
+      team.competitions.some((competition) =>
+        competition.toLowerCase().includes(normalizedQuery),
+      )
+    );
+  });
 
   const selectedSummary = teamSummaries.find(
-    (team) => team.team_number === selectedTeamNumber
+    (team) => team.team_number === selectedTeamNumber,
   );
 
   const theme = getTeamTheme(selectedTeamNumber ?? 3756);
@@ -441,7 +440,7 @@ export function Strategy() {
     : 0;
   const reliabilityEvents = teamData
     ? teamData.endgame.filter(
-        (record) => record.mechanical_issue || record.died || record.fell_over
+        (record) => record.mechanical_issue || record.died || record.fell_over,
       ).length
     : 0;
   const comments = teamData
@@ -456,13 +455,13 @@ export function Strategy() {
   const interviewTags = teamData
     ? [
         ...uniqueNonEmpty(
-          teamData.interview.map((record) => record.drivetrain_type)
+          teamData.interview.map((record) => record.drivetrain_type),
         ),
         ...uniqueNonEmpty(
-          teamData.interview.map((record) => record.shooter_type)
+          teamData.interview.map((record) => record.shooter_type),
         ),
         ...uniqueNonEmpty(
-          teamData.interview.map((record) => record.climb_level)
+          teamData.interview.map((record) => record.climb_level),
         ),
       ].slice(0, 6)
     : [];
@@ -474,16 +473,16 @@ export function Strategy() {
               ...teamData.prematch.map((record) => record.competition),
               ...teamData.interview.map((record) => record.competition),
             ]
-          : []
+          : [],
       );
   const hasTeamData = Boolean(
     teamData &&
-      (teamData.prematch.length ||
-        teamData.autonomous.length ||
-        teamData.teleop.length ||
-        teamData.endgame.length ||
-        teamData.postmatch.length ||
-        teamData.interview.length)
+    (teamData.prematch.length ||
+      teamData.autonomous.length ||
+      teamData.teleop.length ||
+      teamData.endgame.length ||
+      teamData.postmatch.length ||
+      teamData.interview.length),
   );
 
   const selectTeam = (teamNumber: number, label?: string) => {
@@ -505,12 +504,12 @@ export function Strategy() {
     }
 
     const matchingSummary = teamSummaries.find(
-      (team) => team.team_number === parsed
+      (team) => team.team_number === parsed,
     );
 
     selectTeam(
       parsed,
-      matchingSummary ? formatTeamLabel(matchingSummary) : `${parsed}`
+      matchingSummary ? formatTeamLabel(matchingSummary) : `${parsed}`,
     );
   };
 
@@ -814,7 +813,7 @@ export function Strategy() {
                           <strong>
                             {teamData
                               ? teamData.postmatch.filter(
-                                  (record) => (record.defense_skill || 0) > 0
+                                  (record) => (record.defense_skill || 0) > 0,
                                 ).length
                               : 0}
                           </strong>
@@ -826,8 +825,8 @@ export function Strategy() {
                               ? (() => {
                                   const avg = average(
                                     teamData.teleop.map(
-                                      (record) => record.fuel_fed_passed
-                                    )
+                                      (record) => record.fuel_fed_passed,
+                                    ),
                                   );
                                   return avg === null ? "—" : avg.toFixed(1);
                                 })()
@@ -859,7 +858,7 @@ export function Strategy() {
                           <strong>
                             {teamData
                               ? teamData.prematch.filter(
-                                  (record) => record.no_show
+                                  (record) => record.no_show,
                                 ).length
                               : 0}
                           </strong>
@@ -869,7 +868,7 @@ export function Strategy() {
                           <strong>
                             {teamData
                               ? teamData.endgame.filter(
-                                  (record) => record.mechanical_issue
+                                  (record) => record.mechanical_issue,
                                 ).length
                               : 0}
                           </strong>
@@ -879,7 +878,7 @@ export function Strategy() {
                           <strong>
                             {teamData
                               ? teamData.endgame.filter(
-                                  (record) => record.died || record.fell_over
+                                  (record) => record.died || record.fell_over,
                                 ).length
                               : 0}
                           </strong>

@@ -28,28 +28,30 @@ function ProtectedRoute() {
   return <Outlet />;
 }
 
-export const App = () => (
-  <>
-    <Helmet>
-      <title>ScoutFerno</title>
-      <link rel="icon" href="/favicon.ico" />
-    </Helmet>
+export default function App() {
+  return (
+    <>
+      <Helmet>
+        <title>ScoutFerno</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
 
-    <AuthProvider>
-      <ThemeProvider>
-        <div className="min-h-screen">
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/scouting" element={<Scouting />} />
-              <Route path="/strategy" element={<Strategy />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <Footer />
-        </div>
-      </ThemeProvider>
-    </AuthProvider>
-  </>
-);
+      <AuthProvider>
+        <ThemeProvider>
+          <div className="min-h-screen">
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/scouting" element={<Scouting />} />
+                <Route path="/strategy" element={<Strategy />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Footer />
+          </div>
+        </ThemeProvider>
+      </AuthProvider>
+    </>
+  )
+}

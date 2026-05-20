@@ -77,7 +77,7 @@ const vibrate = (pattern: number | number[]) => {
 
 export default function ActionTrackerInput(props: ConfigurableInputProps) {
   const data = useScoutFernoState(
-    inputSelector<ActionTrackerInputData>(props.section, props.code)
+    inputSelector<ActionTrackerInputData>(props.section, props.code),
   );
 
   if (!data) {
@@ -116,7 +116,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
     const counts: Record<string, number> = {};
     for (const action of data.actions) {
       counts[action.code] = actionLog.filter(
-        (e) => e.actionCode === action.code
+        (e) => e.actionCode === action.code,
       ).length;
     }
     return counts;
@@ -138,7 +138,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         }
       }
     },
-    [data.formResetBehavior]
+    [data.formResetBehavior],
   );
 
   useEvent("resetFields", resetState);
@@ -234,7 +234,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
 
       // Get current timestamp in seconds (with 1 decimal precision)
       const timestampSeconds = Number(
-        (elapsedAccumulatorRef.current / 1000).toFixed(1)
+        (elapsedAccumulatorRef.current / 1000).toFixed(1),
       );
 
       setActionLog((prev) => [
@@ -242,7 +242,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         { actionCode, timestamp: timestampSeconds },
       ]);
     },
-    [isRunning, startTimer, hasAutoStopped]
+    [isRunning, startTimer, hasAutoStopped],
   );
 
   // Undo last action
@@ -287,7 +287,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
           }
 
           const startTime = Number(
-            (elapsedAccumulatorRef.current / 1000).toFixed(1)
+            (elapsedAccumulatorRef.current / 1000).toFixed(1),
           );
 
           setActivePointers((prev) => {
@@ -319,7 +319,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         });
       }
     },
-    [isHoldMode, isRunning, startTimer, hasAutoStopped]
+    [isHoldMode, isRunning, startTimer, hasAutoStopped],
   );
 
   // Handle pointer movement - detect scroll intent and cancel if needed
@@ -353,7 +353,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         }
       }
     },
-    [isHoldMode, cancelPendingPointer]
+    [isHoldMode, cancelPendingPointer],
   );
 
   // Hold mode: handle pointer up/cancel/leave (end tracking and record)
@@ -402,7 +402,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
 
       vibrate([30, 20, 30]); // Double buzz on release
     },
-    [isHoldMode, activePointers, cancelPendingPointer]
+    [isHoldMode, activePointers, cancelPendingPointer],
   );
 
   // Tap mode: handle pointer up - record action if not cancelled by scroll
@@ -420,7 +420,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         recordAction(pending.actionCode);
       }
     },
-    [isHoldMode, recordAction]
+    [isHoldMode, recordAction],
   );
 
   // End all active holds and cancel pending pointers when window loses focus
@@ -505,7 +505,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
     (code: string) => {
       return data.actions.find((a) => a.code === code)?.label || code;
     },
-    [data.actions]
+    [data.actions],
   );
 
   return (
@@ -515,7 +515,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         <div
           className={cn(
             "font-mono text-3xl font-bold",
-            hasAutoStopped && "text-muted-foreground"
+            hasAutoStopped && "text-muted-foreground",
           )}
         >
           {formattedTime}
@@ -564,7 +564,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
         {data.actions.map((action) => {
           // Check if this action has any active pointers (being held)
           const isBeingHeld = Array.from(activePointers.values()).some(
-            (p) => p.actionCode === action.code
+            (p) => p.actionCode === action.code,
           );
 
           return (
@@ -574,7 +574,7 @@ export default function ActionTrackerInput(props: ConfigurableInputProps) {
               className={cn(
                 "h-auto min-h-16 flex-col gap-1 text-wrap py-3 touch-none select-none [-webkit-touch-callout:none]",
                 isBeingHeld &&
-                  "ring-2 ring-primary ring-offset-2 !bg-primary/20 animate-pulse"
+                  "ring-2 ring-primary ring-offset-2 !bg-primary/20 animate-pulse",
               )}
               onContextMenu={(e) => e.preventDefault()}
               onPointerDown={(e) => handlePointerDown(e, action.code)}

@@ -52,7 +52,7 @@ function getErrorMessage(error: unknown) {
 }
 
 async function readSessionResponse(
-  response: Response
+  response: Response,
 ): Promise<AuthSessionResponse> {
   const payload = (await response.json()) as Partial<AuthSessionResponse> & {
     detail?: string;
@@ -62,8 +62,8 @@ async function readSessionResponse(
     throw new Error(
       getFriendlyAuthErrorMessage(
         payload.detail || "Authentication request failed.",
-        response.status
-      )
+        response.status,
+      ),
     );
   }
 

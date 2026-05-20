@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogClose } from "../ui/dialog";
 
 export default function ImageInput(props: ConfigurableInputProps) {
   const data = useScoutFernoState(
-    inputSelector<ImageInputData>(props.section, props.code)
+    inputSelector<ImageInputData>(props.section, props.code),
   );
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
@@ -28,7 +28,7 @@ export default function ImageInput(props: ConfigurableInputProps) {
       console.log(
         `resetState ${data.code}`,
         `force: ${force}`,
-        `behavior: ${data.formResetBehavior}`
+        `behavior: ${data.formResetBehavior}`,
       );
       if (force) {
         setValue(data.defaultValue);
@@ -39,7 +39,7 @@ export default function ImageInput(props: ConfigurableInputProps) {
       }
       setValue(data.defaultValue);
     },
-    [data.defaultValue]
+    [data.defaultValue],
   );
 
   useEvent("resetFields", resetState);
@@ -68,7 +68,7 @@ export default function ImageInput(props: ConfigurableInputProps) {
         alt={data.alt || `${data.title} image`}
         className={cn(
           "w-full h-auto object-contain rounded-md cursor-pointer",
-          data.disabled && "opacity-50"
+          data.disabled && "opacity-50",
         )}
         style={{
           width: data.width ? `${data.width}px` : "100%",
