@@ -3,7 +3,7 @@ from ..models.teams_data_models import (
     Teams_Data_Create,
     Teams_Data_Update,
 )
-from ..models.sql_models import team_engine
+from ..database.scouting_db import engine
 from typing import Any, Dict
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
@@ -13,7 +13,7 @@ sb = statbotics.Statbotics()
 
 
 async def create_teams_data(team_data: Teams_Data_Create):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         db_data = Teams_Data.model_validate(team_data)
         session.add(db_data)
 
@@ -30,7 +30,7 @@ async def create_teams_data(team_data: Teams_Data_Create):
 
 
 async def read_teams_data(flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data)
         results = session.exec(statement).all()
         if flagError and not results:
@@ -39,7 +39,7 @@ async def read_teams_data(flagError: bool = True):
 
 
 async def read_teams_data_by_team(team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data).where(
             Teams_Data.team_number == team_number)
         results = session.exec(statement).all()
@@ -53,7 +53,7 @@ async def read_teams_data_by_team_competition(
     team_number: int,
     flagError: bool = True,
 ):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data).where(
             Teams_Data.competition == competition,
             Teams_Data.team_number == team_number,
@@ -70,7 +70,7 @@ async def update_teams_data(
     team_number: int,
     team_data: Teams_Data_Update,
 ):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data).where(
             Teams_Data.competition == competition,
             Teams_Data.team_number == team_number,
@@ -92,7 +92,7 @@ async def update_teams_data(
 
 
 async def delete_teams_data_by_team(team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data).where(
             Teams_Data.team_number == team_number)
         results = session.exec(statement).all()
@@ -111,7 +111,7 @@ async def delete_teams_data_by_team_competition(
     team_number: int,
     flagError: bool = True,
 ):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Teams_Data).where(
             Teams_Data.competition == competition,
             Teams_Data.team_number == team_number,

@@ -3,18 +3,23 @@ from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Field
 
 base_dir = Path(__file__).parent.parent
+
 db_dir = base_dir / "database"
 db_dir.mkdir(exist_ok=True)
 
-team_sqlite_file_name = db_dir / "team_data.db"
-team_sqlite_url = f"sqlite:///{team_sqlite_file_name}"
+sqlite_file_name = db_dir / "scouting.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
 
-team_connect_args = {"check_same_thread": False}
-team_engine = create_engine(team_sqlite_url, echo=True, connect_args=team_connect_args)
+connect_args = {"check_same_thread": False}
 
+engine = create_engine(
+    sqlite_url,
+    echo=True,
+    connect_args=connect_args
+)
 
-def create_team_db_and_tables():
-    SQLModel.metadata.create_all(team_engine)
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
 
 
 class Database_Data(SQLModel):
@@ -24,7 +29,3 @@ class Database_Data(SQLModel):
 
 class Database_Data_Plus(Database_Data):
     match_number: int = Field(index=True)
-
-
-
-

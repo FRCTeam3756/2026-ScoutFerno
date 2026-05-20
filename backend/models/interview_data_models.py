@@ -1,7 +1,7 @@
 from typing import Optional
 from sqlmodel import SQLModel, Field
 
-from .sql_models import Database_Data
+from ..database.scouting_db import Database_Data
 
 class Interview_Data_Base(Database_Data):
     ball_storage: Optional[int] = Field(default=None, index=True) # Rough amount

@@ -3,11 +3,11 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from ..models.interview_data_models import Interview_Data, Interview_Data_Create
-from ..models.sql_models import team_engine
+from ..database.scouting_db import engine
 
 
 async def create_interview_data(match_data: Interview_Data_Create):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         db_data = Interview_Data.model_validate(match_data)
         session.add(db_data)
 
@@ -24,7 +24,7 @@ async def create_interview_data(match_data: Interview_Data_Create):
 
 
 async def read_interview_data(flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
         )
         results = session.exec(statement).all()
@@ -34,7 +34,7 @@ async def read_interview_data(flagError: bool = True):
 
 
 async def read_interview_data_by_team(team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.team_number == team_number
         )
@@ -45,7 +45,7 @@ async def read_interview_data_by_team(team_number: int, flagError: bool = True):
 
 
 async def read_interview_data_by_team_competition(competition: str, team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.team_number == team_number,
             Interview_Data.competition == competition
@@ -57,7 +57,7 @@ async def read_interview_data_by_team_competition(competition: str, team_number:
 
 
 async def update_interview_data(competition: str, team_number: int):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.competition == competition,
             Interview_Data.team_number == team_number,
@@ -76,7 +76,7 @@ async def update_interview_data(competition: str, team_number: int):
 
 
 async def delete_interview_data(competition: str, team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.competition == competition,
             Interview_Data.team_number == team_number,
@@ -93,7 +93,7 @@ async def delete_interview_data(competition: str, team_number: int, flagError: b
 
 
 async def delete_interview_data_by_team(team_number: int, flagError: bool = True):
-    with Session(team_engine) as session:
+    with Session(engine) as session:
         statement = select(Interview_Data).where(
             Interview_Data.team_number == team_number,
         )

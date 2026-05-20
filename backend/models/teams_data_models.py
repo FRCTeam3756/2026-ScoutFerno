@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
-from .sql_models import Database_Data
+from ..database.scouting_db import Database_Data
 
 
 class Teams_Data_Base(Database_Data):
