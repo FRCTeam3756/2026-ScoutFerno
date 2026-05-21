@@ -6,14 +6,10 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import type {
-  AutonomousRecord,
-  EndgameRecord,
+  MatchRecord,
   InterviewRecord,
-  PostmatchRecord,
-  PrematchRecord,
   TeamAllData,
-  TeamSummary,
-  TeleopRecord
+  TeamSummary
 } from "../types/strategy";
 import { fetchTeamData, fetchTeamSummaries } from "../util/strategy";
 import { getTeamTheme } from "../util/teamTheme";
@@ -21,11 +17,7 @@ import { getTeamTheme } from "../util/teamTheme";
 type MatchBundle = {
   competition: string;
   matchNumber: number;
-  prematch?: PrematchRecord;
-  autonomous?: AutonomousRecord;
-  teleop?: TeleopRecord;
-  endgame?: EndgameRecord;
-  postmatch?: PostmatchRecord;
+  match?: MatchRecord;
 };
 
 type KeyValueField<T extends object> = {
@@ -33,37 +25,25 @@ type KeyValueField<T extends object> = {
   label: string;
 };
 
-const PREMATCH_FIELDS: KeyValueField<PrematchRecord>[] = [
+const MATCH_FIELDS: KeyValueField<MatchRecord>[] = [
   { key: "robot_position", label: "Robot Position" },
   { key: "no_show", label: "No Show" },
-];
-
-const AUTONOMOUS_FIELDS: KeyValueField<AutonomousRecord>[] = [
   { key: "auto_fuel_scored", label: "Auto Fuel Scored" },
   { key: "auto_collection_location", label: "Collection Location" },
   { key: "auto_addition_actions", label: "Additional Actions" },
   { key: "auto_stuck", label: "Auto Stuck" },
   { key: "auto_climbed", label: "Auto Climbed" },
-];
-
-const TELEOP_FIELDS: KeyValueField<TeleopRecord>[] = [
   { key: "alliance_won_auto", label: "Alliance Won Auto" },
   { key: "teleop_fuel_scored", label: "Teleop Fuel Scored" },
   { key: "field_usability", label: "Field Usability" },
   { key: "defended_by_opponent", label: "Defended By Opponent" },
   { key: "fuel_fed_passed", label: "Fuel Fed / Passed" },
   { key: "opp_zone_actions", label: "Opponent Zone Actions" },
-];
-
-const ENDGAME_FIELDS: KeyValueField<EndgameRecord>[] = [
   { key: "climbed", label: "Climbed" },
   { key: "climb_position", label: "Climb Position" },
   { key: "mechanical_issue", label: "Mechanical Issue" },
   { key: "died", label: "Died" },
   { key: "fell_over", label: "Fell Over" },
-];
-
-const POSTMATCH_FIELDS: KeyValueField<PostmatchRecord>[] = [
   { key: "scoring_efficiency", label: "Scoring Efficiency" },
   { key: "scored_how", label: "Scored How" },
   { key: "scoring_location", label: "Scoring Location" },
@@ -164,24 +144,8 @@ function buildMatchBundles(teamData: TeamAllData) {
     return bundles.get(key)!;
   };
 
-  for (const record of teamData.prematch) {
-    ensureBundle(record.competition, record.match_number).prematch = record;
-  }
-
-  for (const record of teamData.autonomous) {
-    ensureBundle(record.competition, record.match_number).autonomous = record;
-  }
-
-  for (const record of teamData.teleop) {
-    ensureBundle(record.competition, record.match_number).teleop = record;
-  }
-
-  for (const record of teamData.endgame) {
-    ensureBundle(record.competition, record.match_number).endgame = record;
-  }
-
-  for (const record of teamData.postmatch) {
-    ensureBundle(record.competition, record.match_number).postmatch = record;
+  for (const record of teamData.match) {
+    ensureBundle(record.competition, record.match_number).match = record;
   }
 
   return [...bundles.values()].sort((left, right) => {
@@ -424,27 +388,27 @@ export function Strategy() {
     (team) => team.team_number === selectedTeamNumber,
   );
 
-  const theme = getTeamTheme(selectedTeamNumber ?? 3756);
+  const theme = getTeamTheme(selectedTeamNumber);
   const matchBundles = teamData ? buildMatchBundles(teamData) : [];
   const averageAuto = teamData
-    ? average(teamData.autonomous.map((record) => record.auto_fuel_scored))
+    ? average(teamData.match.map((record) => record.auto_fuel_scored))
     : null;
   const averageTeleop = teamData
-    ? average(teamData.teleop.map((record) => record.teleop_fuel_scored))
+    ? average(teamData.match.map((record) => record.teleop_fuel_scored))
     : null;
   const averageEfficiency = teamData
-    ? average(teamData.postmatch.map((record) => record.scoring_efficiency))
+    ? average(teamData.match.map((record) => record.scoring_efficiency))
     : null;
   const climbs = teamData
-    ? teamData.endgame.filter((record) => record.climbed).length
+    ? teamData.match.filter((record) => record.climbed).length
     : 0;
   const reliabilityEvents = teamData
-    ? teamData.endgame.filter(
+    ? teamData.match.filter(
         (record) => record.mechanical_issue || record.died || record.fell_over,
       ).length
     : 0;
   const comments = teamData
-    ? teamData.postmatch
+    ? teamData.match
         .filter((record) => record.comments && record.comments.trim())
         .map((record) => ({
           id: `${record.competition}-${record.match_number}`,
@@ -470,18 +434,14 @@ export function Strategy() {
     : uniqueNonEmpty(
         teamData
           ? [
-              ...teamData.prematch.map((record) => record.competition),
+              ...teamData.match.map((record) => record.competition),
               ...teamData.interview.map((record) => record.competition),
             ]
           : [],
       );
   const hasTeamData = Boolean(
     teamData &&
-    (teamData.prematch.length ||
-      teamData.autonomous.length ||
-      teamData.teleop.length ||
-      teamData.endgame.length ||
-      teamData.postmatch.length ||
+    (teamData.match.length ||
       teamData.interview.length),
   );
 
@@ -754,7 +714,7 @@ export function Strategy() {
                     />
                     <ProfileMetric
                       label="Climb Rate"
-                      value={percent(climbs, teamData?.endgame.length || 0)}
+                      value={percent(climbs, teamData?.match.length || 0)}
                       caption={`${reliabilityEvents} reliability flags`}
                       theme={theme}
                     />
@@ -812,7 +772,7 @@ export function Strategy() {
                           <span>Defence Played Count</span>
                           <strong>
                             {teamData
-                              ? teamData.postmatch.filter(
+                              ? teamData.match.filter(
                                   (record) => (record.defense_skill || 0) > 0,
                                 ).length
                               : 0}
@@ -824,7 +784,7 @@ export function Strategy() {
                             {teamData
                               ? (() => {
                                   const avg = average(
-                                    teamData.teleop.map(
+                                    teamData.match.map(
                                       (record) => record.fuel_fed_passed,
                                     ),
                                   );
@@ -857,7 +817,7 @@ export function Strategy() {
                           <span>No-show reports</span>
                           <strong>
                             {teamData
-                              ? teamData.prematch.filter(
+                              ? teamData.match.filter(
                                   (record) => record.no_show,
                                 ).length
                               : 0}
@@ -867,7 +827,7 @@ export function Strategy() {
                           <span>Mechanical issues</span>
                           <strong>
                             {teamData
-                              ? teamData.endgame.filter(
+                              ? teamData.match.filter(
                                   (record) => record.mechanical_issue,
                                 ).length
                               : 0}
@@ -877,7 +837,7 @@ export function Strategy() {
                           <span>Knockdowns or deaths</span>
                           <strong>
                             {teamData
-                              ? teamData.endgame.filter(
+                              ? teamData.match.filter(
                                   (record) => record.died || record.fell_over,
                                 ).length
                               : 0}
@@ -1051,7 +1011,7 @@ export function Strategy() {
                             </h4>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            {match.endgame?.climbed ? (
+                            {match.match?.climbed ? (
                               <Badge
                                 className="border-0"
                                 style={{
@@ -1062,15 +1022,15 @@ export function Strategy() {
                                 Climbed
                               </Badge>
                             ) : null}
-                            {match.endgame?.mechanical_issue ? (
+                            {match.match?.mechanical_issue ? (
                               <Badge variant="destructive">
                                 Mechanical Issue
                               </Badge>
                             ) : null}
-                            {match.teleop?.defended_by_opponent ? (
+                            {match.match?.defended_by_opponent ? (
                               <Badge variant="secondary">Faced Defense</Badge>
                             ) : null}
-                            {match.prematch?.no_show ? (
+                            {match.match?.no_show ? (
                               <Badge
                                 variant="outline"
                                 className="border-zinc-500 text-zinc-200"
@@ -1084,32 +1044,8 @@ export function Strategy() {
                         <div className="space-y-6">
                           <MatchSection
                             title="Prematch"
-                            data={match.prematch}
-                            fields={PREMATCH_FIELDS}
-                            theme={theme}
-                          />
-                          <MatchSection
-                            title="Autonomous"
-                            data={match.autonomous}
-                            fields={AUTONOMOUS_FIELDS}
-                            theme={theme}
-                          />
-                          <MatchSection
-                            title="Teleop"
-                            data={match.teleop}
-                            fields={TELEOP_FIELDS}
-                            theme={theme}
-                          />
-                          <MatchSection
-                            title="Endgame"
-                            data={match.endgame}
-                            fields={ENDGAME_FIELDS}
-                            theme={theme}
-                          />
-                          <MatchSection
-                            title="Postmatch"
-                            data={match.postmatch}
-                            fields={POSTMATCH_FIELDS}
+                            data={match.match}
+                            fields={MATCH_FIELDS}
                             theme={theme}
                           />
                         </div>

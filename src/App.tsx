@@ -28,7 +28,7 @@ function ProtectedRoute() {
   return <Outlet />;
 }
 
-export default function App() {
+export function App() {
   return (
     <>
       <Helmet>

@@ -5,8 +5,3 @@ export type AuthUser = {
   first_name: string | null;
   last_name: string | null;
 };
-
-export type AuthSessionResponse = {
-  authenticated: boolean;
-  user: AuthUser | null;
-};

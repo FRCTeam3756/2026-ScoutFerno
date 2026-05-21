@@ -135,10 +135,8 @@ function buildTheme(colorPair: TeamColorPair): TeamTheme {
   };
 }
 
-export function getTeamTheme(teamNumber: number) {
-  const configuredColors =
-    TEAM_COLORS_BY_NUMBER[teamNumber] ||
-    DEFAULT_TEAM_COLORS;
+export function getTeamTheme(teamNumber: number | null) {
+  const configuredColors = (teamNumber == null) ? DEFAULT_TEAM_COLORS : (TEAM_COLORS_BY_NUMBER[teamNumber] || DEFAULT_TEAM_COLORS);
 
   return buildTheme(configuredColors);
 }

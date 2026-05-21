@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { STORE_VERSION } from "../store/store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LogOut } from "lucide-react";
 
 import { useAuth } from "./AuthProvider";
@@ -14,9 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { buildApiUrl } from "../util/api";
-
-type ConnectionStatus = "checking" | "connected" | "disconnected";
 
 const NAV_ITEMS = [
   { to: "/scouting", label: "Scouters" },
@@ -24,84 +21,15 @@ const NAV_ITEMS = [
   { to: "/strategy", label: "Strategists" },
 ] as const;
 
-function useBackendHealth(url: string, baseIntervalMs = 10000) {
-  const [status, setStatus] = useState<ConnectionStatus>("checking");
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    const check = async () => {
-      let nextInterval = baseIntervalMs;
-
-      try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-
-        if (cancelled) return;
-
-        if (res.ok) {
-          setStatus("connected");
-        } else {
-          setStatus("disconnected");
-          nextInterval = Math.min(baseIntervalMs * 2, 60000);
-        }
-      } catch {
-        if (!cancelled) {
-          setStatus("disconnected");
-          nextInterval = Math.min(baseIntervalMs * 2, 60000);
-        }
-      } finally {
-        if (!cancelled) {
-          timeoutId = setTimeout(check, nextInterval);
-        }
-      }
-    };
-
-    void check();
-
-    return () => {
-      cancelled = true;
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [url, baseIntervalMs]);
-
-  return status;
-}
-
-const statusConfig: Record<
-  ConnectionStatus,
-  { label: string; dot: string; text: string }
-> = {
-  checking: {
-    label: "Checking…",
-    dot: "bg-zinc-500 animate-pulse",
-    text: "text-zinc-500",
-  },
-  connected: {
-    label: "Connected",
-    dot: "bg-emerald-400 shadow-[0_0_6px_1px_#34d399]",
-    text: "text-emerald-400",
-  },
-  disconnected: {
-    label: "Disconnected",
-    dot: "bg-red-500 shadow-[0_0_6px_1px_#ef4444]",
-    text: "text-red-400",
-  },
-};
-
 export function Header() {
   const navigate = useNavigate();
-  const status = useBackendHealth(buildApiUrl("/health"));
-  const { label, dot, text } = statusConfig[status];
   const {
     user,
     error,
     clearError,
     isLoading,
     isAuthenticating,
-    signInWithGoogleCredential,
+    signInWithGoogle,
     signOut,
   } = useAuth();
   const [modalError, setModalError] = useState<string | null>(null);
@@ -125,10 +53,10 @@ export function Header() {
     setShowLoginPrompt(true);
   };
 
-  const handlePromptCredential = async (credential: string) => {
+  const handlePromptSignIn = async () => {
     setModalError(null);
     try {
-      await signInWithGoogleCredential(credential);
+      await signInWithGoogle();
       setShowLoginPrompt(false);
       if (pendingPath) {
         navigate(pendingPath);
@@ -184,7 +112,7 @@ export function Header() {
             {!isLoading && !user ? (
               <GoogleSignInButton
                 disabled={isAuthenticating}
-                onCredential={signInWithGoogleCredential}
+                onClick={signInWithGoogle}
               />
             ) : null}
 
@@ -243,15 +171,6 @@ export function Header() {
               </DropdownMenu>
             ) : null}
 
-            <div className="flex items-center gap-2">
-              <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
-              <span className={`font-mono text-xs tracking-wider ${text}`}>
-                {label}
-              </span>
-            </div>
-
-            <div className="hidden h-4 w-px bg-zinc-700 md:block" />
-
             <span className="rounded border border-zinc-700 px-2 py-0.5 font-mono text-xs tracking-wider text-zinc-500">
               v{STORE_VERSION}
             </span>
@@ -288,7 +207,7 @@ export function Header() {
               Sign In Required
             </h2>
             <p className="text-sm text-zinc-300">
-              Sign in with Google to open{" "}
+              Continue with Google to open{" "}
               <span className="font-mono text-zinc-100">
                 {pendingPath || "this page"}
               </span>
@@ -306,7 +225,7 @@ export function Header() {
           <div className="flex justify-center">
             <GoogleSignInButton
               disabled={isAuthenticating}
-              onCredential={handlePromptCredential}
+              onClick={handlePromptSignIn}
             />
           </div>
         </div>
