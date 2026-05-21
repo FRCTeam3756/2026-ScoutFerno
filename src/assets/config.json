@@ -77,13 +77,11 @@
                     "formResetBehavior": "reset",
                     "defaultValue": "",
                     "choices": {
-                        "OT": "Outpost Trench",
-                        "OBFT": "Outpost Bump Favoring Trench",
-                        "OBFH": "Outpost Bump Favoring Hub",
-                        "H": "Hub",
-                        "DBFH": "Depot Bump Favoring Hub",
-                        "DBFT": "Depot Bump Favoring Trench",
-                        "DT": "Depot Trench"
+                        "Outpost Trench": "Outpost Trench",
+                        "Outpost Bump": "Outpost Bump",
+                        "Hub": "Hub",
+                        "Depot Bump": "Depot Bump",
+                        "Depot Trench": "Depot Trench"
                     }
                 },
                 {
@@ -110,17 +108,17 @@
                     "defaultValue": 0
                 },
                 {
-                    "title": "Where Collected Fuel",
+                    "title": "Auto Collection Location",
                     "description": "Areas where fuel was collect from during autonomous",
                     "type": "multi-select",
                     "required": false,
                     "code": "auto_collection_location",
                     "formResetBehavior": "reset",
                     "choices": {
-                        "1": "Outpost",
-                        "2": "Depot",
-                        "3": "Neutral Zone",
-                        "4": "Neutral Zone 2nd Pass"
+                        "Outpost": "Outpost",
+                        "Depot": "Depot",
+                        "Neutral Zone": "Neutral Zone",
+                        "Neutral Zone 2 Pass": "Neutral Zone 2 Pass"
                     }
                 },
                 {
@@ -128,7 +126,7 @@
                     "description": "Additional actions completed during autonomous",
                     "type": "multi-select",
                     "required": false,
-                    "code": "auto_addition_actions",
+                    "code": "auto_additional_actions",
                     "formResetBehavior": "reset",
                     "choices": {
                         "1": "Passed",
@@ -187,13 +185,14 @@
                 {
                     "title": "Bump / Trench",
                     "description": "Did the robot go under the bump or over the trench at least once during the match?",
-                    "type": "multi-select",
+                    "type": "select",
                     "required": false,
-                    "code": "field_usability",
+                    "code": "traversal_ability",
                     "formResetBehavior": "reset",
                     "choices": {
-                        "1": "Bump",
-                        "2": "Trench"
+                        "Bump": "Bump",
+                        "Trench": "Trench",
+                        "Both": "Both"
                     }
                 },
                 {
@@ -206,11 +205,11 @@
                     "defaultValue": false
                 },
                 {
-                    "title": "Fuel Fed (Herded & Passed)",
+                    "title": "Fuel Herded & Passed",
                     "description": "Approximate fuel fed either by shooter or bumper herding during teleop.",
                     "type": "multi-counter",
                     "required": false,
-                    "code": "fuel_fed_passed",
+                    "code": "estimated_fuel_passed",
                     "formResetBehavior": "reset",
                     "defaultValue": 0
                 },
@@ -222,8 +221,8 @@
                     "code": "opp_zone_actions",
                     "formResetBehavior": "reset",
                     "choices": {
-                        "1": "Collecting",
-                        "2": "Defense"
+                        "Stealing": "Stealing",
+                        "Defense": "Defense"
                     }
                 },
                 {
@@ -321,7 +320,7 @@
                     "description": "Rate the robot's scoring effectiveness.",
                     "type": "range",
                     "required": false,
-                    "code": "scoring_efficiency",
+                    "code": "subjective_scoring_skill",
                     "formResetBehavior": "reset",
                     "defaultValue": 3,
                     "min": 0,
@@ -335,9 +334,8 @@
                     "required": false,
                     "code": "scored_how",
                     "formResetBehavior": "reset",
-                    "defaultValue": "blank",
+                    "defaultValue": null,
                     "choices": {
-                        "blank": "(blank)",
                         "driving": "While driving",
                         "stationary": "While stationary",
                         "both": "Both",
@@ -352,20 +350,20 @@
                     "code": "scoring_location",
                     "formResetBehavior": "reset",
                     "choices": {
-                        "1": "Outpost Trench",
-                        "2": "Outpost",
-                        "3": "Hub",
-                        "4": "Ladder",
-                        "5": "Depot",
-                        "6": "Depot Trench"
+                        "Outpost Trench": "Outpost Trench",
+                        "Outpost": "Outpost",
+                        "Hub": "Hub",
+                        "Ladder": "Ladder",
+                        "Depot": "Depot",
+                        "Depot Trench": "Depot Trench"
                     }
                 },
                 {
-                    "title": "Feeding/Passing Skill",
-                    "description": "Rate the robot's feeding skill.",
+                    "title": "Passing Effectiveness",
+                    "description": "Rate the robot's passing skill.",
                     "type": "range",
                     "required": false,
-                    "code": "feeding_skills",
+                    "code": "subjective_passing_skill",
                     "formResetBehavior": "reset",
                     "defaultValue": 3,
                     "min": 0,
@@ -393,7 +391,7 @@
                     "description": "Rate the robot's defensive skill.",
                     "type": "range",
                     "required": false,
-                    "code": "defense_skill",
+                    "code": "subjective_defense_skill",
                     "formResetBehavior": "reset",
                     "defaultValue": 0,
                     "min": 0,

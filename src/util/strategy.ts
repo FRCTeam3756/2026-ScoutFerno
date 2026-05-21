@@ -10,8 +10,8 @@ export async function fetchTeamSummaries(
       team_number,
       name,
       competitions,
-      matches:match(count),
-      interviews:interview(count)
+      matches:matches(count),
+      interviews:interviews(count)
     `);
 
   if (signal) {
@@ -37,7 +37,7 @@ export async function fetchTeamData(
   teamNumber: number,
   signal?: AbortSignal,
 ): Promise<TeamAllData> {
-  let matchQuery = supabase.from("match").select("*").eq("team_number", teamNumber);
+  let matchQuery = supabase.from("matches").select("*").eq("team_number", teamNumber);
   let interviewQuery = supabase
     .from("interview")
     .select("*")

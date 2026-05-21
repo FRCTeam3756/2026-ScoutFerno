@@ -159,7 +159,7 @@ export async function pushDataToSupabase(): Promise<Result<void>> {
   };
 
   try {
-    const { error } = await supabase.from("match").insert(payload);
+    const { error } = await supabase.from("matches").insert(payload);
 
     if (error) {
       return { success: false, error: new Error(error.message) };

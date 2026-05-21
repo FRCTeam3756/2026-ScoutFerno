@@ -8,8 +8,7 @@
     "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
-    "preview": "vite preview",
-    "schema": "ts-node scripts/generateJsonSchema.ts assets/schema.json && cp assets/schema.json public/schema.json"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.19",
