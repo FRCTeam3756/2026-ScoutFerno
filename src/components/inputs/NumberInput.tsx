@@ -14,7 +14,9 @@ export default function NumberInput(props: ConfigurableInputProps) {
     return <div>Invalid input</div>;
   }
 
-  const [value, setValue] = React.useState<number | "">(data.defaultValue);
+  const [value, setValue] = React.useState<number | "">(
+    data.defaultValue ?? "",
+  );
 
   const resetState = useCallback(
     ({ force }: { force: boolean }) => {
@@ -24,12 +26,12 @@ export default function NumberInput(props: ConfigurableInputProps) {
         `behavior: ${data.formResetBehavior}`
       );
       if (force) {
-        setValue(data.defaultValue);
+        setValue(data.defaultValue ?? "");
         return;
       }
       switch (data.formResetBehavior) {
         case "reset":
-          setValue(data.defaultValue);
+          setValue(data.defaultValue ?? "");
           return;
         case "increment":
           setValue((prev) => (typeof prev === "number" ? prev + 1 : 1));

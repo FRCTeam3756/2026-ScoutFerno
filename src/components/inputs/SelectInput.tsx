@@ -20,7 +20,7 @@ export default function SelectInput(props: ConfigurableInputProps) {
     return <div>Invalid input</div>;
   }
 
-  const [value, setValue] = useState(data.defaultValue);
+  const [value, setValue] = useState<string | null>(data.defaultValue);
 
   useEffect(() => {
     updateValue(props.code, value);
@@ -65,7 +65,11 @@ export default function SelectInput(props: ConfigurableInputProps) {
   }
 
   return (
-    <Select name={data.title} onValueChange={handleSelect} value={value}>
+    <Select
+      name={data.title}
+      onValueChange={handleSelect}
+      value={value ?? undefined}
+    >
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>

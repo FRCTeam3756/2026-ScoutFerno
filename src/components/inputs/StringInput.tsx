@@ -18,7 +18,7 @@ export default function StringInput(props: ConfigurableInputProps) {
     return <div>Invalid input</div>;
   }
 
-  const [value, setValue] = React.useState(data.defaultValue);
+  const [value, setValue] = React.useState<string | null>(data.defaultValue);
 
   const resetState = useCallback(
     ({ force }: { force: boolean }) => {
@@ -63,7 +63,7 @@ export default function StringInput(props: ConfigurableInputProps) {
       name={`${data.title}_input`}
       id={`${data.title}_input`}
       onChange={handleChange}
-      value={value}
+      value={value ?? ""}
       maxLength={data.max}
       minLength={data.min}
     />

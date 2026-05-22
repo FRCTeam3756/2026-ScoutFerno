@@ -29,8 +29,8 @@ export const inputBaseSchema = z.object({
     .enum(["reset", "preserve", "increment"])
     .default("reset")
     .describe("The behavior of this input when the form is reset"),
-  defaultValue: z.unknown().describe("The default value"),
-});
+
+  });
 
 export const stringInputSchema = inputBaseSchema.extend({
   type: z.literal("text"),
@@ -39,6 +39,7 @@ export const stringInputSchema = inputBaseSchema.extend({
   defaultValue: z
     .string()
     .nullable()
+    .optional()
     .default(null)
     .describe("The default value"),
 });
@@ -50,6 +51,7 @@ export const numberInputSchema = inputBaseSchema.extend({
   defaultValue: z
     .number()
     .nullable()
+    .optional()
     .default(null)
     .describe("The default value"),
 });
@@ -60,6 +62,7 @@ export const selectInputSchema = inputBaseSchema.extend({
   defaultValue: z
     .string()
     .nullable()
+    .optional()
     .default(null)
     .describe("The default value. Must be one of the choices"),
 });
@@ -110,6 +113,7 @@ export const imageInputSchema = inputBaseSchema.extend({
   defaultValue: z
     .string()
     .nullable()
+    .optional()
     .default(null)
     .describe("The URL to a statically hosted image"),
   width: z.number().optional().describe("The width of the image in pixels"),
@@ -138,6 +142,7 @@ export const tbaTeamAndRobotInputSchema = inputBaseSchema.extend({
       robot_position: z.string(),
     })
     .nullable()
+    .optional()
     .default(null)
     .describe("The default team and robot position"),
 });
@@ -206,52 +211,6 @@ export const colorSchemeSchema = z.object({
   chart_5: shadcnColorSchema,
 });
 
-export type ColorScheme = z.infer<typeof colorSchemeSchema>;
-
-const legacyThemeSchema = z.object({
-  light: colorSchemeSchema,
-  dark: colorSchemeSchema,
-});
-
-const colorScheme: ColorScheme = {
-  background: "0 0% 3.9%",
-  foreground: "0 0% 98%",
-  card: "0 0% 3.9%",
-  card_foreground: "0 0% 98%",
-  popover: "0 0% 3.9%",
-  popover_foreground: "0 0% 98%",
-  primary: "25 95% 50%",
-  primary_foreground: "0 0% 100%",
-  secondary: "0 0% 14.9%",
-  secondary_foreground: "0 0% 98%",
-  muted: "0 0% 14.9%",
-  muted_foreground: "0 0% 63.9%",
-  accent: "0 0% 14.9%",
-  accent_foreground: "0 0% 98%",
-  destructive: "25 85% 35%",
-  destructive_foreground: "0 0% 98%",
-  border: "0 0% 14.9%",
-  input: "0 0% 14.9%",
-  ring: "25 95% 50%",
-  chart_1: "220 70% 50%",
-  chart_2: "160 60% 45%",
-  chart_3: "30 80% 55%",
-  chart_4: "280 65% 60%",
-  chart_5: "340 75% 55%",
-};
-
-export const themeSchema = z.preprocess((value) => {
-  const legacyTheme = legacyThemeSchema.safeParse(value);
-
-  if (legacyTheme.success) {
-    return legacyTheme.data.dark;
-  }
-
-  return value;
-}, colorSchemeSchema);
-
-export type ScoutFernoTheme = z.infer<typeof themeSchema>;
-
 export const configSchema = z.object({
   title: z
     .string()
@@ -261,7 +220,6 @@ export const configSchema = z.object({
   delimiter: z
     .string()
     .describe("The delimiter to use when joining the form data"),
-  theme: themeSchema.default(colorScheme),
   sections: z.array(sectionSchema),
 });
 
@@ -301,3 +259,4 @@ export type InputPropsMap = {
 
 export type SectionProps = z.infer<typeof sectionSchema>;
 export type Config = z.infer<typeof configSchema>;
+export type ColorScheme = z.infer<typeof colorSchemeSchema>;

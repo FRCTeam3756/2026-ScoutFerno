@@ -13,7 +13,7 @@ import { createStore } from "./createStore";
 
 export type { Result };
 
-export const STORE_VERSION = 3.01;
+export const STORE_VERSION = 3.02;
 
 function generateFieldValues(_: Config): { code: string; value: any }[] {
   const fieldValues: { code: string; value: any }[] = [];
