@@ -1,37 +1,6 @@
 {
     "title": "ScoutFerno",
     "delimiter": "\t",
-    "team_number": 3756,
-    "floatingField": {
-        "show": false,
-        "codeValue": "team_number"
-    },
-    "theme": {
-        "background": "0 0% 3.9%",
-        "foreground": "0 0% 98%",
-        "card": "0 0% 3.9%",
-        "card_foreground": "0 0% 98%",
-        "popover": "0 0% 3.9%",
-        "popover_foreground": "0 0% 98%",
-        "primary": "25 95% 50%",
-        "primary_foreground": "0 0% 100%",
-        "secondary": "0 0% 14.9%",
-        "secondary_foreground": "0 0% 98%",
-        "muted": "0 0% 14.9%",
-        "muted_foreground": "0 0% 63.9%",
-        "accent": "0 0% 14.9%",
-        "accent_foreground": "0 0% 98%",
-        "destructive": "25 85% 35%",
-        "destructive_foreground": "0 0% 98%",
-        "border": "0 0% 14.9%",
-        "input": "0 0% 14.9%",
-        "ring": "25 95% 50%",
-        "chart_1": "220 70% 50%",
-        "chart_2": "160 60% 45%",
-        "chart_3": "30 80% 55%",
-        "chart_4": "280 65% 60%",
-        "chart_5": "340 75% 55%"
-    },
     "sections": [
         {
             "name": "Prematch",
@@ -43,7 +12,7 @@
                     "required": true,
                     "code": "competition",
                     "formResetBehavior": "preserve",
-                    "defaultValue": "",
+                    "defaultValue": null,
                     "choices": {
                         "WAT": "Waterloo",
                         "WIN": "Windsor",
@@ -75,7 +44,7 @@
                     "required": true,
                     "code": "robot_position",
                     "formResetBehavior": "reset",
-                    "defaultValue": "",
+                    "defaultValue": null,
                     "choices": {
                         "Outpost Trench": "Outpost Trench",
                         "Outpost Bump": "Outpost Bump",
@@ -224,28 +193,6 @@
                         "Stealing": "Stealing",
                         "Defense": "Defense"
                     }
-                },
-                {
-                    "title": "Actions",
-                    "description": "Track actions performed during teleop.",
-                    "type": "action-tracker",
-                    "required": false,
-                    "code": "teleopActions",
-                    "formResetBehavior": "reset",
-                    "defaultValue": null,
-                    "mode": "hold",
-                    "actions": [
-                        {
-                            "label": "Faffing & Stuck",
-                            "code": "faffing"
-                        },
-                        {
-                            "label": "Defense",
-                            "code": "defense"
-                        }
-                    ],
-                    "timerDuration": 135,
-                    "autoStopSeconds": 150
                 }
             ]
         },
@@ -302,7 +249,7 @@
                     "defaultValue": false
                 },
                 {
-                    "title": "Tipped/Fell Over",
+                    "title": "Fell Over?",
                     "description": "Did the robot tip or fall over during the match?",
                     "type": "boolean",
                     "required": false,
@@ -336,10 +283,10 @@
                     "formResetBehavior": "reset",
                     "defaultValue": null,
                     "choices": {
-                        "driving": "While driving",
-                        "stationary": "While stationary",
-                        "both": "Both",
-                        "none": "No scoring"
+                        "Driving": "While driving",
+                        "Stationary": "While stationary",
+                        "Both": "Both",
+                        "No scoring": "No scoring"
                     }
                 },
                 {
@@ -417,7 +364,7 @@
                     "required": false,
                     "code": "comments",
                     "formResetBehavior": "reset",
-                    "defaultValue": "",
+                    "defaultValue": null,
                     "min": 0,
                     "max": 100
                 }

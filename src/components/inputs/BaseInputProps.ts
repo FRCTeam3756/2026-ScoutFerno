@@ -36,14 +36,22 @@ export const stringInputSchema = inputBaseSchema.extend({
   type: z.literal("text"),
   min: z.number().optional().describe("The minimum length of the string"),
   max: z.number().optional().describe("The maximum length of the string"),
-  defaultValue: z.string().default("").describe("The default value"),
+  defaultValue: z
+    .string()
+    .nullable()
+    .default(null)
+    .describe("The default value"),
 });
 
 export const numberInputSchema = inputBaseSchema.extend({
   type: z.literal("number"),
   min: z.number().optional().describe("The minimum value"),
   max: z.number().optional().describe("The maximum value"),
-  defaultValue: z.number().default(0).describe("The default value"),
+  defaultValue: z
+    .number()
+    .nullable()
+    .default(null)
+    .describe("The default value"),
 });
 
 export const selectInputSchema = inputBaseSchema.extend({
@@ -51,7 +59,8 @@ export const selectInputSchema = inputBaseSchema.extend({
   choices: z.record(z.string()).optional().describe("The choices"),
   defaultValue: z
     .string()
-    .default("")
+    .nullable()
+    .default(null)
     .describe("The default value. Must be one of the choices"),
 });
 
@@ -100,7 +109,8 @@ export const imageInputSchema = inputBaseSchema.extend({
   type: z.literal("image"),
   defaultValue: z
     .string()
-    .default("")
+    .nullable()
+    .default(null)
     .describe("The URL to a statically hosted image"),
   width: z.number().optional().describe("The width of the image in pixels"),
   height: z.number().optional().describe("The height of the image in pixels"),
@@ -116,37 +126,7 @@ export const actionSchema = z.object({
     .string()
     .optional()
     .describe(
-      'Optional Lucide icon name (e.g., "fuel", "target"). See https://lucide.dev/icons'
-    ),
-});
-
-export const actionTrackerInputSchema = inputBaseSchema.extend({
-  type: z.literal("action-tracker"),
-  defaultValue: z
-    .null()
-    .default(null)
-    .describe("Default value (null, as this input generates multiple fields)"),
-  mode: z
-    .enum(["tap", "hold"])
-    .default("hold")
-    .describe(
-      "Recording mode: 'tap' records instant timestamps on click, 'hold' records duration while button is pressed (default: 'hold')"
-    ),
-  actions: z
-    .array(actionSchema)
-    .min(1)
-    .describe("The actions to track. Each action becomes a tappable button."),
-  timerDuration: z
-    .number()
-    .optional()
-    .describe(
-      "Expected duration in seconds (for UI reference, e.g., 15 for auto, 135 for teleop)"
-    ),
-  autoStopSeconds: z
-    .number()
-    .optional()
-    .describe(
-      "Automatically stop the timer after this many seconds. Useful to prevent the timer from running past the match phase duration."
+      'Optional Lucide icon name (e.g., "fuel", "target"). See https://lucide.dev/icons',
     ),
 });
 
@@ -183,10 +163,9 @@ export const sectionSchema = z.object({
       booleanInputSchema,
       timerInputSchema,
       imageInputSchema,
-      actionTrackerInputSchema,
       tbaTeamAndRobotInputSchema,
       tbaMatchNumberInputSchema,
-    ])
+    ]),
   ),
 });
 
@@ -234,27 +213,26 @@ const legacyThemeSchema = z.object({
   dark: colorSchemeSchema,
 });
 
-const defaultColorScheme: ColorScheme = {
+const colorScheme: ColorScheme = {
   background: "0 0% 3.9%",
   foreground: "0 0% 98%",
   card: "0 0% 3.9%",
   card_foreground: "0 0% 98%",
   popover: "0 0% 3.9%",
   popover_foreground: "0 0% 98%",
-  primary: "354.44 71.3% 47.9%",
-  primary_foreground: "0 85.7% 97.3%",
+  primary: "25 95% 50%",
+  primary_foreground: "0 0% 100%",
   secondary: "0 0% 14.9%",
   secondary_foreground: "0 0% 98%",
   muted: "0 0% 14.9%",
   muted_foreground: "0 0% 63.9%",
   accent: "0 0% 14.9%",
   accent_foreground: "0 0% 98%",
-  destructive: "0 62.8% 30.6%",
+  destructive: "25 85% 35%",
   destructive_foreground: "0 0% 98%",
   border: "0 0% 14.9%",
   input: "0 0% 14.9%",
-  ring: "354.44 71.3% 47.9%",
-  radius: "0.5rem",
+  ring: "25 95% 50%",
   chart_1: "220 70% 50%",
   chart_2: "160 60% 45%",
   chart_3: "30 80% 55%",
@@ -278,36 +256,12 @@ export const configSchema = z.object({
   title: z
     .string()
     .describe(
-      "The title of the scouting site. This will be displayed in the header and browser tab."
-    ),
-  year: z
-    .number()
-    .optional()
-    .describe(
-      "The year this scouting config is relevant for. Defaults to the current year if not provided."
+      "The title of the scouting site. This will be displayed in the header and browser tab.",
     ),
   delimiter: z
     .string()
     .describe("The delimiter to use when joining the form data"),
-  team_number: z
-    .number()
-    .describe("The team number of the team using this form."),
-  floatingField: z
-    .object({
-      show: z
-        .boolean()
-        .describe(
-          "Whether or not to always show this value at the top of the screen. May be useful on small screens"
-        ),
-      codeValue: z
-        .string()
-        .describe("Code of the form field to get this value from"),
-    })
-    .optional()
-    .describe(
-      "Optional floating text box at the tob of the screen to show things like the team number. May be useful on small screens"
-    ),
-  theme: themeSchema.default(defaultColorScheme),
+  theme: themeSchema.default(colorScheme),
   sections: z.array(sectionSchema),
 });
 
@@ -324,7 +278,6 @@ export type RangeInputData = z.infer<typeof rangeInputSchema>;
 export type BooleanInputData = z.infer<typeof booleanInputSchema>;
 export type TimerInputData = z.infer<typeof timerInputSchema>;
 export type ImageInputData = z.infer<typeof imageInputSchema>;
-export type ActionTrackerInputData = z.infer<typeof actionTrackerInputSchema>;
 export type ActionData = z.infer<typeof actionSchema>;
 export type TBATeamAndRobotInputData = z.infer<
   typeof tbaTeamAndRobotInputSchema
@@ -342,7 +295,6 @@ export type InputPropsMap = {
   "multi-counter": MultiCounterInputData;
   timer: TimerInputData;
   image: ImageInputData;
-  "action-tracker": ActionTrackerInputData;
   "TBA-team-and-robot": TBATeamAndRobotInputData;
   "TBA-match-number": TBAMatchNumberInputData;
 };

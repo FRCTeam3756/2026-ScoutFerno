@@ -2,7 +2,6 @@ import { produce } from "immer";
 import { cloneDeep } from "lodash";
 import configJson from "../assets/config.json";
 import {
-  ActionTrackerInputData,
   Config,
   configSchema,
   InputBase,
@@ -14,33 +13,10 @@ import { createStore } from "./createStore";
 
 export type { Result };
 
-export const STORE_VERSION = 3.0;
+export const STORE_VERSION = 3.01;
 
-function generateFieldValues(config: Config): { code: string; value: any }[] {
+function generateFieldValues(_: Config): { code: string; value: any }[] {
   const fieldValues: { code: string; value: any }[] = [];
-
-  for (const section of config.sections) {
-    for (const field of section.fields) {
-      if (field.type === "action-tracker") {
-        const actionField = field as ActionTrackerInputData;
-        for (const action of actionField.actions) {
-          fieldValues.push({
-            code: `${field.code}_${action.code}_count`,
-            value: 0,
-          });
-          fieldValues.push({
-            code: `${field.code}_${action.code}_times`,
-            value: "",
-          });
-        }
-      } else {
-        fieldValues.push({
-          code: field.code,
-          value: field.defaultValue,
-        });
-      }
-    }
-  }
 
   return fieldValues;
 }
@@ -131,26 +107,26 @@ export async function pushDataToSupabase(): Promise<Result<void>> {
     no_show: flat.no_show,
     auto_fuel_scored: flat.auto_fuel_scored,
     auto_collection_location: flat.auto_collection_location,
-    auto_addition_actions: flat.auto_addition_actions,
+    auto_additional_actions: flat.auto_additional_actions,
     auto_stuck: flat.auto_stuck,
     auto_climbed: flat.auto_climbed,
     alliance_won_auto: flat.alliance_won_auto,
     teleop_fuel_scored: flat.teleop_fuel_scored,
-    field_usability: flat.field_usability,
+    traversal_ability: flat.traversal_ability,
     defended_by_opponent: flat.defended_by_opponent,
-    fuel_fed_passed: flat.fuel_fed_passed,
+    estimated_fuel_passed: flat.estimated_fuel_passed,
     opp_zone_actions: flat.opp_zone_actions,
     climbed: flat.climbed,
     climb_position: flat.climb_position,
     mechanical_issue: flat.mechanical_issue,
     died: flat.died,
     fell_over: flat.fell_over,
-    scoring_efficiency: flat.scoring_efficiency,
+    subjective_scoring_skill: flat.subjective_scoring_skill,
     scored_how: flat.scored_how,
     scoring_location: flat.scoring_location,
-    feeding_skills: flat.feeding_skills,
+    subjective_passing_skill: flat.subjective_passing_skill,
     passed_how: flat.passed_how,
-    defense_skill: flat.defense_skill,
+    subjective_defense_skill: flat.subjective_defense_skill,
     cards: flat.cards,
     comments: flat.comments,
     team_number: flat.robot?.team_number,
