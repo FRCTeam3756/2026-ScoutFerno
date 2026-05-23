@@ -1,10 +1,10 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Scouting } from "./pages/Scouting";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
+import { Header } from "./components/global/Header";
+import { Footer } from "./components/global/Footer";
 import { Helmet } from "react-helmet";
 import { Home } from "./pages/Home";
-import { AuthProvider, useAuth } from "./components/AuthProvider";
+import { AuthProvider, useAuth } from "./components/authentication/AuthProvider";
 import { Strategy } from "./pages/Strategy";
 
 function ProtectedRoute() {

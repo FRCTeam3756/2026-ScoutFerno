@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { UserRoundCheck } from "lucide-react";
-import { Modal } from "../core/Modal";
+import { Modal } from "../global/Modal";
 import { pushDataToSupabase } from "../../store/store";
-import { useAuth } from "../AuthProvider";
+import { useAuth } from "../authentication/AuthProvider";
 
 export type CommitButtonProps = {
   disabled?: boolean;
@@ -54,7 +54,9 @@ export function CommitButton(props: CommitButtonProps) {
         variant="destructive"
         onClick={() => setShowModal(true)}
         disabled={props.disabled || !user || isSubmitting}
-        title={user ? undefined : "Continue with Google before committing data."}
+        title={
+          user ? undefined : "Continue with Google before committing data."
+        }
       >
         <UserRoundCheck className="h-5 w-5" />
         Commit Form

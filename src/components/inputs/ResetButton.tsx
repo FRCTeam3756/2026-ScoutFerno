@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { ListRestart } from "lucide-react";
 import { resetFields } from "../../store/store";
-import { Modal } from "../core/Modal";
+import { Modal } from "../global/Modal";
 
 export type ResetButtonProps = {
   disabled?: boolean;

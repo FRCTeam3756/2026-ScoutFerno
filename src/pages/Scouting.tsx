@@ -1,6 +1,8 @@
-import { CommitAndResetSection } from "../components/CommitAndResetSection";
-import FormSection from "../components/FormSection";
+import { Section } from "src/components/global/Section";
+import FormSection from "../components/scouting/FormSection";
 import { useScoutFernoState } from "../store/store";
+import { CommitButton } from "src/components/inputs/CommitButton";
+import { ResetButton } from "src/components/inputs/ResetButton";
 
 export function Scouting() {
   const formData = useScoutFernoState((state) => state.formData);
@@ -12,7 +14,10 @@ export function Scouting() {
           {formData.sections.map((section) => (
             <FormSection key={section.name} name={section.name} />
           ))}
-          <CommitAndResetSection />
+          <Section>
+            <CommitButton />
+            <ResetButton />
+          </Section>
         </div>
       </form>
     </main>

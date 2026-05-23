@@ -7,8 +7,8 @@ import {
 } from "react";
 import type { Session } from "@supabase/supabase-js";
 
-import type { AuthUser } from "../types/auth";
-import { supabase } from "../util/supabase";
+import type { AuthUser } from "../../types/auth";
+import { supabase } from "../../util/supabase";
 
 type AuthContextValue = {
   user: AuthUser | null;

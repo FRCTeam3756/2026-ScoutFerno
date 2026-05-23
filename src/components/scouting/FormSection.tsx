@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { getFieldValue, useScoutFernoState } from "../store/store";
-import { Section } from "./core/Section";
-import { InputBase } from "./inputs/BaseInputProps";
-import ConfigurableInput from "./inputs/ConfigurableInput";
-import InputCard from "./inputs/InputCard";
+import { getFieldValue, useScoutFernoState } from "../../store/store";
+import { Section } from "./../global/Section";
+import { InputBase } from "../inputs/BaseInputProps";
+import ConfigurableInput from "../inputs/ConfigurableInput";
+import InputCard from "../inputs/InputCard";
 
 interface SectionProps {
   name: string;
@@ -13,7 +13,7 @@ export default function FormSection(props: SectionProps) {
   const formData = useScoutFernoState((state) => state.formData);
   const section = useMemo(
     () => formData.sections.find((s) => s.name === props.name),
-    [formData, props.name]
+    [formData, props.name],
   );
   const inputs = useMemo(() => section?.fields, [section]);
 

@@ -1,11 +1,11 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { STORE_VERSION } from "../store/store";
+import { STORE_VERSION } from "../../store/store";
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 
-import { useAuth } from "./AuthProvider";
-import { GoogleSignInButton } from "./GoogleSignInButton";
-import { Modal } from "./core/Modal";
+import { useAuth } from "../authentication/AuthProvider";
+import { GoogleSignInButton } from "../authentication/GoogleSignInButton";
+import { Modal } from "./Modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 const NAV_ITEMS = [
   { to: "/scouting", label: "Scouters" },
