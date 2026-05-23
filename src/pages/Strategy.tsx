@@ -5,9 +5,9 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
+import scoutingConfig from "../assets/config.json";
 import type {
   MatchRecord,
-  InterviewRecord,
   TeamAllData,
   TeamSummary
 } from "../types/strategy";
@@ -25,46 +25,74 @@ type KeyValueField<T extends object> = {
   label: string;
 };
 
-const MATCH_FIELDS: KeyValueField<MatchRecord>[] = [
-  { key: "robot_position", label: "Robot Position" },
-  { key: "no_show", label: "No Show" },
-  { key: "auto_fuel_scored", label: "Auto Fuel Scored" },
-  { key: "auto_collection_location", label: "Collection Location" },
-  { key: "auto_addition_actions", label: "Additional Actions" },
-  { key: "auto_stuck", label: "Auto Stuck" },
-  { key: "auto_climbed", label: "Auto Climbed" },
-  { key: "alliance_won_auto", label: "Alliance Won Auto" },
-  { key: "teleop_fuel_scored", label: "Teleop Fuel Scored" },
-  { key: "field_usability", label: "Field Usability" },
-  { key: "defended_by_opponent", label: "Defended By Opponent" },
-  { key: "fuel_fed_passed", label: "Fuel Fed / Passed" },
-  { key: "opp_zone_actions", label: "Opponent Zone Actions" },
-  { key: "climbed", label: "Climbed" },
-  { key: "climb_position", label: "Climb Position" },
-  { key: "mechanical_issue", label: "Mechanical Issue" },
-  { key: "died", label: "Died" },
-  { key: "fell_over", label: "Fell Over" },
-  { key: "scoring_efficiency", label: "Scoring Efficiency" },
-  { key: "scored_how", label: "Scored How" },
-  { key: "scoring_location", label: "Scoring Location" },
-  { key: "feeding_skills", label: "Feeding Skills" },
-  { key: "passed_how", label: "Passed How" },
-  { key: "defense_skill", label: "Defense Skill" },
-  { key: "cards", label: "Cards" },
-  { key: "comments", label: "Comments" },
-];
+const FIELD_LABELS = new Map<string, string>(
+  scoutingConfig.sections.flatMap((section) =>
+    section.fields.map((field) => [field.code, field.title] as const),
+  ),
+);
 
-const INTERVIEW_FIELDS: KeyValueField<InterviewRecord>[] = [
-  { key: "ball_storage", label: "Ball Storage" },
-  { key: "drivetrain_type", label: "Drivetrain" },
-  { key: "shooter_type", label: "Shooter" },
-  { key: "shooter_ball_width", label: "Shooter Width" },
-  { key: "intake_type", label: "Intake" },
-  { key: "intake_amount", label: "Intake Amount" },
-  { key: "field_elements_usability", label: "Field Elements" },
-  { key: "climb_level", label: "Climb Level" },
-  { key: "climb_positions", label: "Climb Positions" },
-];
+const FIELD_LABEL_ALIASES: Record<string, string> = {
+  auto_addition_actions: "Other Auto Actions",
+  scoring_efficiency: "Scoring Effectiveness",
+  feeding_skills: "Passing Effectiveness",
+  defense_skill: "Defense Skill",
+  fuel_fed_passed: "Fuel Herded & Passed",
+  estimated_fuel_passed: "Fuel Herded & Passed",
+  subjective_scoring_skill: "Scoring Effectiveness",
+  subjective_passing_skill: "Passing Effectiveness",
+  subjective_defense_skill: "Defense Skill",
+};
+
+const MATCH_FIELD_ORDER = [
+  "competition",
+  "match_number",
+  "team_number",
+  "robot_position",
+  "no_show",
+  "auto_fuel_scored",
+  "auto_collection_location",
+  "auto_addition_actions",
+  "auto_additional_actions",
+  "auto_stuck",
+  "auto_climbed",
+  "alliance_won_auto",
+  "teleop_fuel_scored",
+  "traversal_ability",
+  "defended_by_opponent",
+  "fuel_fed_passed",
+  "estimated_fuel_passed",
+  "opp_zone_actions",
+  "climbed",
+  "climb_position",
+  "mechanical_issue",
+  "died",
+  "fell_over",
+  "scoring_efficiency",
+  "subjective_scoring_skill",
+  "scored_how",
+  "scoring_location",
+  "feeding_skills",
+  "subjective_passing_skill",
+  "passed_how",
+  "defense_skill",
+  "subjective_defense_skill",
+  "cards",
+  "comments",
+] as const;
+
+const INTERVIEW_FIELD_ORDER = [
+  "competition",
+  "team_number",
+  "ball_storage",
+  "drivetrain_type",
+  "shooter_type",
+  "shooter_ball_width",
+  "intake_type",
+  "intake_amount",
+  "field_elements_usability",
+  "climb_level",
+  "climb_positions",
+] as const;
 
 function parseTeamNumber(value: string | null) {
   if (!value) {
@@ -100,7 +128,43 @@ function formatValue(value: unknown) {
     return value;
   }
 
+  if (Array.isArray(value)) {
+    const parts = value
+      .map((item) => (typeof item === "string" ? item.trim() : String(item)))
+      .filter(Boolean);
+    return parts.length ? parts.join(", ") : "—";
+  }
+
   return "—";
+}
+
+function humanizeKey(key: string) {
+  return key
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getFieldLabel(key: string) {
+  return FIELD_LABEL_ALIASES[key] ?? FIELD_LABELS.get(key) ?? humanizeKey(key);
+}
+
+function buildVisibleFields<T extends object>(
+  data: T,
+  orderedKeys: readonly string[],
+) {
+  const keys = Object.keys(data as Record<string, unknown>).filter(
+    (key) => key !== "id",
+  );
+  const orderedSet = new Set(orderedKeys);
+  const ordered = orderedKeys.filter((key) => keys.includes(key));
+  const extras = keys
+    .filter((key) => !orderedSet.has(key))
+    .sort((left, right) => left.localeCompare(right));
+
+  return [...ordered, ...extras].map((key) => ({
+    key: key as keyof T,
+    label: getFieldLabel(key),
+  }));
 }
 
 function average(values: Array<number | null | undefined>) {
@@ -201,12 +265,14 @@ function KeyValueGrid<T extends object>({
   theme,
 }: {
   data: T;
-  fields: KeyValueField<T>[];
+  fields?: KeyValueField<T>[];
   theme: ReturnType<typeof getTeamTheme>;
 }) {
+  const resolvedFields = fields ?? buildVisibleFields(data, []);
+
   return (
     <dl className="grid gap-3 sm:grid-cols-2">
-      {fields.map((field) => (
+      {resolvedFields.map((field) => (
         <div
           key={String(field.key)}
           className="rounded-xl border px-3 py-3"
@@ -951,7 +1017,10 @@ export function Strategy() {
                         </div>
                         <KeyValueGrid
                           data={interview}
-                          fields={INTERVIEW_FIELDS}
+                          fields={buildVisibleFields(
+                            interview,
+                            INTERVIEW_FIELD_ORDER,
+                          )}
                           theme={theme}
                         />
                       </article>
@@ -1045,7 +1114,14 @@ export function Strategy() {
                           <MatchSection
                             title="Prematch"
                             data={match.match}
-                            fields={MATCH_FIELDS}
+                            fields={
+                              match.match
+                                ? buildVisibleFields(
+                                    match.match,
+                                    MATCH_FIELD_ORDER,
+                                  )
+                                : []
+                            }
                             theme={theme}
                           />
                         </div>

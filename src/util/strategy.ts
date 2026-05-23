@@ -5,7 +5,7 @@ export async function fetchTeamSummaries(
   _?: AbortSignal,
 ): Promise<TeamSummary[]> {
   const [teamsRes, matchesRes, interviewsRes] = await Promise.all([
-    supabase.from("teams").select("team_number, name, competitions"),
+    supabase.from("teams").select("team_number, name, competition"),
     supabase.from("matches").select("team_number"),
     supabase.from("interviews").select("team_number"),
   ]);
@@ -37,7 +37,7 @@ export async function fetchTeamSummaries(
   return teams.map((team: any) => ({
     team_number: team.team_number,
     name: team.name,
-    competitions: team.competitions || [],
+    competitions: team.competition ? [team.competition] : [],
     match_count: matchCountMap.get(team.team_number) ?? 0,
     interview_count: interviewCountMap.get(team.team_number) ?? 0,
   }));
