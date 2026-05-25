@@ -1,6 +1,22 @@
 import type { TeamAllData, TeamSummary } from "../types/strategy";
 import { supabase } from "./supabase";
 
+async function buildEmptyDataDiagnostic() {
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
+
+  if (sessionError) {
+    return `Supabase returned no visible rows and the session check failed: ${sessionError.message}`;
+  }
+
+  if (!sessionData.session) {
+    return "Supabase returned no visible rows because there is no active session. Sign in again and retry.";
+  }
+
+  const userEmail = sessionData.session.user.email ?? "this account";
+  return `Supabase returned a successful response, but no rows were visible to ${userEmail}. Either the tables are empty or your SELECT RLS policies are blocking this user.`;
+}
+
 export async function fetchTeamSummaries(
   _?: AbortSignal,
 ): Promise<TeamSummary[]> {
@@ -19,6 +35,10 @@ export async function fetchTeamSummaries(
   const teams = teamsRes.data ?? [];
   const matches = matchesRes.data ?? [];
   const interviews = interviewsRes.data ?? [];
+
+  if (!teams.length && !matches.length && !interviews.length) {
+    throw new Error(await buildEmptyDataDiagnostic());
+  }
 
   const matchCountMap = new Map<number, number>();
   for (const m of matches) {
