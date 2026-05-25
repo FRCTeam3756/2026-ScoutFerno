@@ -4,6 +4,8 @@ export interface TeamSummary {
   competitions: string[];
   match_count: number;
   interview_count: number;
+  primary_color: string | null;
+  secondary_color: string | null;
 }
 
 interface RecordBase {

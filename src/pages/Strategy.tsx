@@ -121,7 +121,14 @@ export function Strategy() {
     (team) => team.team_number === selectedTeamNumber,
   );
 
-  const theme = getTeamTheme(selectedTeamNumber);
+  const theme = getTeamTheme(
+    selectedSummary
+      ? {
+          primary: selectedSummary.primary_color,
+          secondary: selectedSummary.secondary_color,
+        }
+      : null,
+  );
   const metrics = buildStrategyMetrics(teamData);
   const competitionList = buildCompetitionList(selectedSummary, teamData);
 

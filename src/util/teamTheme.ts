@@ -1,8 +1,14 @@
-import {
-  TEAM_COLORS_BY_NUMBER,
-  DEFAULT_TEAM_COLORS,
-  type TeamColorPair,
-} from "../assets/teamColors";
+export interface TeamColors {
+  primary: string;
+  secondary: string;
+  label?: string;
+}
+
+type TeamColorInput = {
+  primary?: string | null;
+  secondary?: string | null;
+  label?: string;
+};
 
 export interface TeamTheme {
   primary: string;
@@ -22,6 +28,11 @@ type Rgb = {
   r: number;
   g: number;
   b: number;
+};
+
+const DEFAULT_TEAM_COLORS: TeamColors = {
+  primary: "#858585",
+  secondary: "#585656",
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -46,6 +57,19 @@ function normalizeHex(hex: string) {
   throw new Error(`Invalid hex color: ${hex}`);
 }
 
+function isValidHex(hex: string | null | undefined): hex is string {
+  if (!hex) {
+    return false;
+  }
+
+  try {
+    normalizeHex(hex);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function hexToRgb(hex: string): Rgb {
   const normalized = normalizeHex(hex);
 
@@ -58,7 +82,9 @@ function hexToRgb(hex: string): Rgb {
 
 function rgbToHex({ r, g, b }: Rgb) {
   return `#${[r, g, b]
-    .map((channel) => clamp(Math.round(channel), 0, 255).toString(16).padStart(2, "0"))
+    .map((channel) =>
+      clamp(Math.round(channel), 0, 255).toString(16).padStart(2, "0"),
+    )
     .join("")}`;
 }
 
@@ -104,9 +130,21 @@ function pickTextColor(background: string) {
   return relativeLuminance(background) > 0.42 ? "#111827" : "#f8fafc";
 }
 
-function buildTheme(colorPair: TeamColorPair): TeamTheme {
-  const primary = colorPair.primary;
-  const secondary = colorPair.secondary;
+function resolveTeamColors(colors?: TeamColorInput | null): TeamColors {
+  return {
+    primary: isValidHex(colors?.primary)
+      ? colors.primary
+      : DEFAULT_TEAM_COLORS.primary,
+    secondary: isValidHex(colors?.secondary)
+      ? colors.secondary
+      : DEFAULT_TEAM_COLORS.secondary,
+    label: colors?.label,
+  };
+}
+
+function buildTheme(colors: TeamColors): TeamTheme {
+  const primary = colors.primary;
+  const secondary = colors.secondary;
   const accent = mixColors(primary, "#ffffff", 0.82);
   const accentStrong = mixColors(primary, "#ffffff", 0.45);
   const surface = mixColors(secondary, "#000000", 0.16);
@@ -129,14 +167,12 @@ function buildTheme(colorPair: TeamColorPair): TeamTheme {
     gradient: `radial-gradient(circle at top left, rgba(${glowColor.r}, ${glowColor.g}, ${glowColor.b}, 0.35), transparent 35%), linear-gradient(135deg, ${surface} 0%, ${surfaceAlt} 58%, ${mixColors(
       secondary,
       "#000000",
-      0.35
+      0.35,
     )} 100%)`,
     shadow: `0 28px 70px ${withAlpha(primary, 0.28)}`,
   };
 }
 
-export function getTeamTheme(teamNumber: number | null) {
-  const configuredColors = (teamNumber == null) ? DEFAULT_TEAM_COLORS : (TEAM_COLORS_BY_NUMBER[teamNumber] || DEFAULT_TEAM_COLORS);
-
-  return buildTheme(configuredColors);
+export function getTeamTheme(colors?: TeamColorInput | null) {
+  return buildTheme(resolveTeamColors(colors));
 }
