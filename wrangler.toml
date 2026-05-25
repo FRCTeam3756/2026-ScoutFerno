@@ -1,7 +1,8 @@
 name = "scoutferno"
 main = "wrangler.js"
 compatibility_date = "2026-03-24"
-preview_urls = true
+preview_urls = false
+workers_dev = false
 
 [assets]
 directory = "./dist"
